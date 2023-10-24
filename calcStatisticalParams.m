@@ -357,7 +357,7 @@ for iSample=1:nSample
             statisticalParams(iSample).rdnsc_m_2=nan;
         end
         %mean and median values are calculated using the grainsize indexed particle shape. Very different with the results calculated via the original 
-        % exported accumulation curve of particle shape. I don't know which one should be better.
+        % exported accumulation curve of particle shape. I don't know which one should be reasonable for sediments.
         [~,~,statisticalParams(iSample).spht_50,statisticalParams(iSample).spht_m]=diff2cum(rawData(iSample).spht3,rawData(iSample).adjustP3,[1e-3,1]);
         [~,~,statisticalParams(iSample).b_l_50,statisticalParams(iSample).b_l_m]=diff2cum(rawData(iSample).b_l3,rawData(iSample).adjustP3,[1e-3,1]);
         [~,~,statisticalParams(iSample).B_LRec_50,statisticalParams(iSample).B_LRec_m]=diff2cum(rawData(iSample).B_LRec3,rawData(iSample).adjustP3,[1e-3,1]);

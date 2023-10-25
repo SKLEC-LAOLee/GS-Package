@@ -1,9 +1,9 @@
 function exportForAnalySize(statisticalParams,outputConfig)
 %----------------------------------------------------------------------------------------------------
-% @file name：  exportForAnalySize.m
-% @description：Outputs data reports that can be imported into AnalySize software for end element analysis.
-% @author：     Li Weihua, whli@sklec.ecnu.edu.cn
-% @version：    Ver1.0, 2023.10.05
+% @file name:   exportForAnalySize.m
+% @description: Outputs data reports that can be imported into AnalySize software for end element analysis.
+% @author:      Li Weihua, whli@sklec.ecnu.edu.cn
+% @version:     Ver1.0, 2023.10.05
 %----------------------------------------------------------------------------------------------------
 % @param:
 % statisticalParams.

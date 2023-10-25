@@ -1,9 +1,9 @@
 function [velocity,direction]=en2vd(uSpeed,vSpeed, rotation)
 %----------------------------------------------------------------------------------------------------
-% @file name：  en2vd.m
-% @description：composition U(east) and V(north) component to speed and direction(0 degrees eastward, increasing clockwise)
-% @author：     Li Weihua, whli@sklec.ecnu.edu.cn
-% @version：    Ver1.0, 10/21/2023
+% @file name:   en2vd.m
+% @description: composition U(east) and V(north) component to speed and direction(0 degrees eastward, increasing clockwise)
+% @author:      Li Weihua, whli@sklec.ecnu.edu.cn
+% @version:     Ver1.0, 10/21/2023
 %----------------------------------------------------------------------------------------------------
 % @param:
 % uSpeed, east component

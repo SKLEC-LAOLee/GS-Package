@@ -1,10 +1,10 @@
 function rawData=readCamSizerData(dataPath,simpleProcessFlag,userSettingFileName,userDefinedValidSizeLim,forceReadRawDataFlag,MIN_CHANNEL_SIZE_MM,MAX_CHANNEL_SIZE_MM)
 %----------------------------------------------------------------------------------------------------
-% @file name：  readCamSizerData.m
-% @description：Batch read all XLE or XLD data files in the CamSizer data directory (xle files are
+% @file name:   readCamSizerData.m
+% @description: Batch read all XLE or XLD data files in the CamSizer data directory (xle files are
 %               retrieved first by default, xld files are retrieved when xle does not exist).
-% @author：     Li Weihua, whli@sklec.ecnu.edu.cn
-% @version：    Ver1.1, 10/21/2023
+% @author:      Li Weihua, whli@sklec.ecnu.edu.cn
+% @version:     Ver1.1, 10/21/2023
 %----------------------------------------------------------------------------------------------------
 % @param:
 % dataPath, full path of the data files
@@ -19,7 +19,7 @@ function rawData=readCamSizerData(dataPath,simpleProcessFlag,userSettingFileName
 % MIN_CHANNEL_SIZE_MM, lower limit of instrument detection (mm), should be greater than 0, default is 0.1um
 % MAX_CHANNEL_SIZE_MM, upper limit of instrument detection (mm), default is 20mm
 %
-% @return：
+% @return: 
 % rawData.
 %           dataPath: full path of the data file
 %           fileName: file name of the xle/xld file

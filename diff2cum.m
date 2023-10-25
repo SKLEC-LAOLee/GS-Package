@@ -1,9 +1,9 @@
 function [channelUpperSize,cumuPercent,medianVal,meanVal,passingVal]=diff2cum(indexVar,diffPercent,rangeOfIndexVar,userPercentLevel)
 %----------------------------------------------------------------------------------------------------
-% @file name：  diff2cum.m
-% @description：calculate the cumulative percentage from differential data
-% @author：     Li Weihua, whli@sklec.ecnu.edu.cn
-% @version：    Ver1.0, 10/21/2023
+% @file name:   diff2cum.m
+% @description: calculate the cumulative percentage from differential data
+% @author:      Li Weihua, whli@sklec.ecnu.edu.cn
+% @version:     Ver1.0, 10/21/2023
 %----------------------------------------------------------------------------------------------------
 % @param:
 % indexVar, the variable being counted, for example: grainsize, shape factor, age......

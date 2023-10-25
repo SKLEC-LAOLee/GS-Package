@@ -1,9 +1,9 @@
 function rawData=readCoulterLsData(dataPath,simpleProcessFlag,userSettingFileName,userDefinedValidSizeLim,forceReadRawDataFlag,MIN_CHANNEL_SIZE_MM,MAX_CHANNEL_SIZE_MM)
 %----------------------------------------------------------------------------------------------------
-% @file name：  readCoulterLsData.m
-% @description：Batch read all *.$ls data files in the Coulter data directory
-% @author：     Li Weihua, whli@sklec.ecnu.edu.cn
-% @version：    Ver1.1, 10/21/2023
+% @file name:   readCoulterLsData.m
+% @description: Batch read all *.$ls data files in the Coulter data directory
+% @author:      Li Weihua, whli@sklec.ecnu.edu.cn
+% @version:     Ver1.1, 10/21/2023
 %----------------------------------------------------------------------------------------------------
 % dataPath, full path of the data files
 % simpleProcessFlag, simple processing mode (no configuration file information is read)
@@ -17,7 +17,7 @@ function rawData=readCoulterLsData(dataPath,simpleProcessFlag,userSettingFileNam
 % MIN_CHANNEL_SIZE_MM, lower limit of instrument detection (mm), should be greater than 0, default is 0.1um
 % MAX_CHANNEL_SIZE_MM, upper limit of instrument detection (mm), default is 20mm
 %
-% @return：
+% @return: 
 % rawData.
 %           dataPath: full path of the data file
 %           fileName: file name of the xle/xld file

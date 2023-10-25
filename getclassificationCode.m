@@ -1,9 +1,9 @@
 function [classificationCode,classificationMethod]=getclassificationCode(gravel,sand,silt,clay)
 %----------------------------------------------------------------------------------------------------
-% @file name：  getclassificationCode.m
-% @description：Triangular classification of a single sample
-% @author：     Li Weihua, whli@sklec.ecnu.edu.cn
-% @version：    Ver1.0, 2023.10.17
+% @file name:   getclassificationCode.m
+% @description: Triangular classification of a single sample
+% @author:      Li Weihua, whli@sklec.ecnu.edu.cn
+% @version:     Ver1.0, 2023.10.17
 %----------------------------------------------------------------------------------------------------
 % @param:
 % gravel, (2mm,inf] volume percentage(%)

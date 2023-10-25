@@ -1,9 +1,9 @@
 function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %----------------------------------------------------------------------------------------------------
-% @file name：  calcStatisticalParams.m
-% @description：Calculation of particle size and shape statistical parameters
-% @author：     Li Weihua, whli@sklec.ecnu.edu.cn
-% @version：    Ver1.1, 2023.10.22
+% @file name:   calcStatisticalParams.m
+% @description: Calculation of particle size and shape statistical parameters
+% @author:      Li Weihua, whli@sklec.ecnu.edu.cn
+% @version:     Ver1.1, 2023.10.22
 %----------------------------------------------------------------------------------------------------
 % @param:
 % rawData.
@@ -84,7 +84,7 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 % userSettings.
 %    componentUpSize: upper size of the user components (um)
 %  componentDownSize: lower size of the user components (um)
-% @return：
+% @return: 
 % statisticalParams.
 %           dataPath: full path of the data file
 %           fileName: file name of the xle/xld file
@@ -196,7 +196,7 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %             ='Blair-McPherson1999', have gravel
 %             ='Folk1954'  , no gravel
 %    upSize_GBT12763: upper limit size of the channels which are defined in GBT12763, (um)
-%        Q3_GBT12763：cumulative volume percentage of the channels which are defined in GBT12763, (%)
+%        Q3_GBT12763: cumulative volume percentage of the channels which are defined in GBT12763, (%)
 %            spht_50_2: median value of sphericity, calculated using the original exported accumulation curve of particle shape
 %             spht_m_2: mean value of sphericity, calculated using the original exported accumulation curve of particle shape
 %             b_l_50_2: median value of aspect ratio, calculated using the original exported accumulation curve of particle shape
@@ -204,29 +204,46 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %        B_LRec_m_50_2: median value of minimum aspect ratio, calculated using the original exported accumulation curve of particle shape
 %         B_LRec_m_m_2: mean value of minimum aspect ratio, calculated using the original exported accumulation curve of particle shape
 %            symm_50_2: median value of symmetry, calculated using the original exported accumulation curve of particle shape
-%             symm_m_2：mean value of symmetry, calculated using the original exported accumulation curve of particle shape
-%           rdnsc_50_2：median value of roundness, calculated using the original exported accumulation curve of particle shape
-%            rdnsc_m_2：mean value of roundness, calculated using the original exported accumulation curve of particle shape
-%            conv_50_2：median value of convexity, calculated using the original exported accumulation curve of particle shape
-%             conv_m_2：mean value of convexity, calculated using the original exported accumulation curve of particle shape
+%             symm_m_2: mean value of symmetry, calculated using the original exported accumulation curve of particle shape
+%           rdnsc_50_2: median value of roundness, calculated using the original exported accumulation curve of particle shape
+%            rdnsc_m_2: mean value of roundness, calculated using the original exported accumulation curve of particle shape
+%            conv_50_2: median value of convexity, calculated using the original exported accumulation curve of particle shape
+%             conv_m_2: mean value of convexity, calculated using the original exported accumulation curve of particle shape
 %          sigmav_50_2: median value of sigmav?, calculated using the original exported accumulation curve of particle shape
 %           sigmav_m_2: mean value of sigmav?, calculated using the original exported accumulation curve of particle shape
 %            spht_50: median value of sphericity, calculated using the grainsize indexed particle shape
 %             spht_m: mean value of sphericity, calculated using the grainsize indexed particle shape
 %             b_l_50: median value of aspect ratio, calculated using the grainsize indexed particle shape
 %              b_l_m: mean value of aspect ratio, calculated using the grainsize indexed particle shape
-%        B_LRec_m_50: median value of minimum aspect ratio, calculated using the grainsize indexed particle shape
-%         B_LRec_m_m: mean value of minimum aspect ratio, calculated using the grainsize indexed particle shape
+%          B_LRec_50: median value of minimum aspect ratio, calculated using the grainsize indexed particle shape
+%           B_LRec_m: mean value of minimum aspect ratio, calculated using the grainsize indexed particle shape
 %            symm_50: median value of symmetry, calculated using the grainsize indexed particle shape
-%             symm_m：mean value of symmetry, calculated using the grainsize indexed particle shape
-%           rdnsc_50：median value of roundness, calculated using the grainsize indexed particle shape
-%            rdnsc_m：mean value of roundness, calculated using the grainsize indexed particle shape
-%            conv_50：median value of convexity, calculated using the grainsize indexed particle shape
-%             conv_m：mean value of convexity, calculated using the grainsize indexed particle shape
+%             symm_m: mean value of symmetry, calculated using the grainsize indexed particle shape
+%           rdnsc_50: median value of roundness, calculated using the grainsize indexed particle shape
+%            rdnsc_m: mean value of roundness, calculated using the grainsize indexed particle shape
+%            conv_50: median value of convexity, calculated using the grainsize indexed particle shape
+%             conv_m: mean value of convexity, calculated using the grainsize indexed particle shape
 %          sigmav_50: median value of sigmav?, calculated using the grainsize indexed particle shape
 %           sigmav_m: mean value of sigmav?, calculated using the grainsize indexed particle shape
 %         sfCorey_50: median value of Corey shape factor, calculated using the grainsize indexed  particle shape
 %          sfCorey_m: mean value of Corey shape factor=channelSize_xFe_min/sqrt(channelSize_xFe_avg*channelSize_xFe_max), calculated using the grainsize indexed  particle shape
+%      userComponent: parameters of the user-specified components
+%             .upSize       : upper size of the user-specified components
+%             .downSize     : lower size of the user-specified components
+%             .density      : percentage of all
+%             .dm           : mean size in unit of um
+%             .dm_Mcmanus   : mean size in unit of phi(Mcmanus method)
+%             .sigma_Mcmanus: sorting (Mcmanus method)
+%             .sk_Mcmanus   : skewness (Mcmanus method)
+%             .kg_Mcmanus   : Kurtosis (Mcmanus method)
+%             .spht_m       : mean value of sphericity, calculated using the grainsize indexed particle shape
+%             .symm_m       : mean value of symmetry, calculated using the grainsize indexed particle shape
+%             .b_l_m        : mean value of aspect ratio, calculated using the grainsize indexed particle shape
+%             .B_LRec_m     : mean value of minimum aspect ratio, calculated using the grainsize indexed particle shape
+%             .sigmav_m     : mean value of sigmav?, calculated using the grainsize indexed particle shape
+%             .conv_m       : mean value of convexity, calculated using the grainsize indexed particle shape
+%             .rdnsc_m      : mean value of roundness, calculated using the grainsize indexed particle shape
+%             .sfCorey_m    : mean value of Corey shape factor
 % @references:
 % Bagheri, G. H., C. Bonadonna, I. Manzella, and P. Vonlanthen. “On the Characterization of Size and Shape of Irregular Particles.” 
 %          Powder Technology 270 (January 1, 2015): 141–53. https://doi.org/10.1016/j.powtec.2014.10.015.
@@ -234,7 +251,7 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %                                  https://doi.org/10.1306/74D70646-2B21-11D7-8648000102C1865D
 % Li, Linzhu, and Magued Iskander. “Comparison of 2D and 3D Dynamic Image Analysis for Characterization of Natural Sands.” 
 %          Engineering Geology 290 (September 5, 2021): 106052. https://doi.org/10.1016/j.enggeo.2021.106052.
-% State market regulatory administration of P.R.C. "Specifications for oceanographic survey - Part 8：marine geology and geophysics survey
+% State market regulatory administration of P.R.C. "Specifications for oceanographic survey - Part 8: marine geology and geophysics survey
 %          (海洋调查规范 第8部分: 海洋地质地球物理调查.)" GB/T 12763.8-2007(2007).
 % Terence C. Blair, John G. McPherson; Grain-size and textural classification of coarse sedimentary particles. Journal of Sedimentary Research 1999;; 69 (1): 6–19.
 %                                  https://doi.org/10.2110/jsr.69.6
@@ -327,7 +344,7 @@ for iSample=1:nSample
             statisticalParams(iSample).spht_50_2=interp1(rawData(iSample).q3Spht+(1:length(rawData(iSample).q3Spht))'.*1e-7,rawData(iSample).channelUpShape,50);
             statisticalParams(iSample).symm_50_2=interp1(rawData(iSample).q3Symm+(1:length(rawData(iSample).q3Symm))'.*1e-7,rawData(iSample).channelUpShape,50);
             statisticalParams(iSample).b_l_50_2=interp1(rawData(iSample).q3_b_l+(1:length(rawData(iSample).q3_b_l))'.*1e-7,rawData(iSample).channelUpShape,50);
-            statisticalParams(iSample).B_LRec_m_50_2=interp1(rawData(iSample).q3B_LRec+(1:length(rawData(iSample).q3B_LRec))'.*1e-7,rawData(iSample).channelUpShape,50);
+            statisticalParams(iSample).B_LRec_50_2=interp1(rawData(iSample).q3B_LRec+(1:length(rawData(iSample).q3B_LRec))'.*1e-7,rawData(iSample).channelUpShape,50);
             statisticalParams(iSample).sigmav_50_2=interp1(rawData(iSample).q3Sigmav+(1:length(rawData(iSample).q3Sigmav))'.*1e-7,rawData(iSample).channelUpShape,50);
             statisticalParams(iSample).conv_50_2=interp1(rawData(iSample).q3Conv+(1:length(rawData(iSample).q3Conv))'.*1e-7,rawData(iSample).channelUpShape,50);
             statisticalParams(iSample).rdnsc_50_2=interp1(rawData(iSample).q3Rdnsc+(1:length(rawData(iSample).q3Rdnsc))'.*1e-7,rawData(iSample).channelUpShape,50);
@@ -343,7 +360,7 @@ for iSample=1:nSample
             statisticalParams(iSample).spht_50_2=nan;
             statisticalParams(iSample).symm_50_2=nan;
             statisticalParams(iSample).b_l_50_2=nan;
-            statisticalParams(iSample).B_LRec_m_50_2=nan;
+            statisticalParams(iSample).B_LRec_50_2=nan;
             statisticalParams(iSample).sigmav_50_2=nan;
             statisticalParams(iSample).conv_50_2=nan;
             statisticalParams(iSample).rdnsc_50_2=nan;

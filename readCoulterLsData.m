@@ -30,6 +30,7 @@ function rawData=readCoulterLsData(dataPath,simpleProcessFlag,userSettingFileNam
 %            groupId: unique numeric id of the group
 %         sampleName: sample name
 %           sampleId: unique numeric id of the sample
+%  exportToAnalySize: export the sample data to AnalySize. =0, disable; =1, enable
 %         configInfo: configuration file name of the instrument (xxx.cfg)
 %               type: Rules for particle size statistics(string), here is 'x_area'
 %                     ='xc_min', perpendicular to sieving methods
@@ -168,6 +169,7 @@ for iSample=1:sampleNum
     validSizeLim=userDefinedValidSizeLim;
     thisGroupName='undefined';
     thisGroupId=-999;
+    exportToAnalySize=1;
 
     getValidDataFlag=false;
     recordStarted=false;
@@ -204,6 +206,7 @@ for iSample=1:sampleNum
                         thisGroupName=userSettings.groupName{iSet};
                         thisGroupId=userSettings.groupId(iSet);
                         thisSampleId=userSettings.sampleId(iSet);
+                        exportToAnalySize=userSettings.exportToAnalySize(iSet);
                         break;
                     end
                 end
@@ -223,6 +226,7 @@ for iSample=1:sampleNum
             rawData(validFileNum).groupId=thisGroupId;
             rawData(validFileNum).dataPath=dataPath;
             rawData(validFileNum).fileName=thisDataFileName;
+            rawData(validFileNum).exportToAnalySize=exportToAnalySize;
             rawData(validFileNum).configInfo='';
             rawData(validFileNum).type='x_area';
             rawData(validFileNum).analysisTime=[];

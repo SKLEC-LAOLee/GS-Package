@@ -30,6 +30,7 @@ function rawData=readMalvernData(dataPath,simpleProcessFlag,userSettingFileName,
 %            groupId: unique numeric id of the group
 %         sampleName: sample name
 %           sampleId: unique numeric id of the sample
+%  exportToAnalySize: export the sample data to AnalySize. =0, disable; =1, enable
 %         configInfo: configuration file name of the instrument (xxx.cfg)
 %               type: Rules for particle size statistics(string), here is 'x_area'
 %                     ='xc_min', perpendicular to sieving methods
@@ -189,6 +190,7 @@ for iSample=1:sampleNum
     validSizeLim=userDefinedValidSizeLim;
     thisGroupName='undefined';
     thisGroupId=-999;
+    exportToAnalySize=1;
 
     thisSampleData=zeros(500,2);
     diamChannelNum=0;
@@ -208,6 +210,7 @@ for iSample=1:sampleNum
                 thisGroupName=userSettings.groupName{iSet};
                 thisGroupId=userSettings.groupId(iSet);
                 thisSampleId=userSettings.sampleId(iSet);
+                exportToAnalySize=userSettings.exportToAnalySize(iSet);
                 break;
             end
         end
@@ -227,6 +230,7 @@ for iSample=1:sampleNum
     rawData(validSampleNum).groupId=thisGroupId;
     rawData(validSampleNum).dataPath=dataPath;
     rawData(validSampleNum).fileName=thisDataFileName;
+    rawData(validSampleNum).exportToAnalySize=exportToAnalySize;
     rawData(validSampleNum).configInfo=instrumentDataTable.Var3{iSample};
     rawData(validSampleNum).type='x_area';
     rawData(validSampleNum).analysisTime=instrumentDataTable.Var2(iSample); %datetime类型

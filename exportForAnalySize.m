@@ -18,6 +18,7 @@ function exportForAnalySize(statisticalParams,outputConfig)
 %            groupId: unique numeric id of the group
 %         sampleName: sample name
 %           sampleId: unique numeric id of the sample
+%  exportToAnalySize: export the sample data to AnalySize. =0, disable; =1, enable
 %         configInfo: configuration file name of the instrument (xxx.cfg)
 %               type: Rules for particle size statistics(string)
 %                     ='xc_min', perpendicular to sieving methods
@@ -60,35 +61,12 @@ function exportForAnalySize(statisticalParams,outputConfig)
 %           language: 
 %               ='cn'   Particle grading curves are labeled in Chinese
 %               ='en'   Particle grading curves are labeled in English
-%     outputSampleId: Specifies the samples that need to be analyzed using AnlySize for end-element analysis, 
-%                     the sample id is unique and is the same as used in the readUserSettings.m
 %    userChannelSize: Specify uniform channel boundaries (samples are measured with several types of instruments with 
 %                     different channel-size definition), in um, example values [0.1,1,2,10:10:5000].
 % @references:
 % https://github.com/greigpaterson/AnalySize
 %----------------------------------------------------------------------------------------------------
 nSample=length(statisticalParams);
-if isempty(outputConfig.outputSampleId)
-    if nSample>0
-        for iSample=1:nSample
-            outputConfig.outputSampleId(iSample,1)=statisticalParams(iSample).sampleId;
-        end
-    end
-end
-nExport=length(outputConfig.outputSampleId);
-if (nSample<1)||(nExport<1)
-    return;
-end
-
-dataIdInRaw=zeros(nExport,1);
-for iExport=1:nExport
-    for iSample=1:nSample
-        if (statisticalParams(iSample).sampleId==outputConfig.outputSampleId(iExport))
-            dataIdInRaw(iExport,1)=iSample;
-            break;
-        end
-    end
-end
 
 if outputConfig.userChannelSize(1)<1e-3
     outputConfig.userChannelSize(1)=1e-3;
@@ -109,11 +87,11 @@ for iChannel=1:nChannel
 end
 fprintf(fidout,'\n');
 %
-for iExport=1:nExport
-    if dataIdInRaw(iExport,1)>0
-        newQ3=interp1(statisticalParams(dataIdInRaw(iExport,1)).channelUpSize,statisticalParams(dataIdInRaw(iExport,1)).adjustQ3,userChannelSize);
+for iSample=1:nSample
+    if statisticalParams(iSample).exportToAnalySize>0
+        newQ3=interp1(statisticalParams(iSample).channelUpSize,statisticalParams(iSample).adjustQ3,userChannelSize);
         newP3=diff(newQ3);
-        fprintf(fidout,'%s(%d)',statisticalParams(dataIdInRaw(iExport,1)).sampleName,statisticalParams(dataIdInRaw(iExport,1)).sampleId);
+        fprintf(fidout,'%s(%d)',statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
         for iChannel=1:nChannel
             fprintf(fidout,'\t%.3f',newP3(iChannel));
         end

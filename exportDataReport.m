@@ -18,6 +18,7 @@ function exportDataReport(statisticalParams,outputConfig)
 %            groupId: unique numeric id of the group
 %         sampleName: sample name
 %           sampleId: unique numeric id of the sample
+%  exportToAnalySize: export the sample data to AnalySize. =0, disable; =1, enable
 %         configInfo: configuration file name of the instrument (xxx.cfg)
 %               type: Rules for particle size statistics(string)
 %                     ='xc_min', perpendicular to sieving methods

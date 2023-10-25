@@ -32,6 +32,7 @@ function rawData=readCamSizerData(dataPath,simpleProcessFlag,userSettingFileName
 %            groupId: unique numeric id of the group
 %         sampleName: sample name
 %           sampleId: unique numeric id of the sample
+%  exportToAnalySize: export the sample data to AnalySize. =0, disable; =1, enable
 %         configInfo: configuration file name of the instrument (xxx.cfg)
 %               type: Rules for particle size statistics(string)
 %                     ='xc_min', perpendicular to sieving methods
@@ -176,6 +177,7 @@ for iSample=1:sampleNum
     validSizeLim=userDefinedValidSizeLim;
     thisGroupName='undefined';
     thisGroupId=-999;
+    exportToAnalySize=1;
     % retrieve user settings
     if simpleProcessFlag==false
         userSetRecordNum=length(userSettings.name);
@@ -190,6 +192,7 @@ for iSample=1:sampleNum
                 thisGroupName=userSettings.groupName{iSet};
                 thisGroupId=userSettings.groupId(iSet);
                 thisSampleId=userSettings.sampleId(iSet);
+                exportToAnalySize=userSettings.exportToAnalySize(iSet);
                 break;
             end
         end
@@ -221,6 +224,7 @@ for iSample=1:sampleNum
                 rawData(validFileNum).groupId=thisGroupId;
                 rawData(validFileNum).dataPath=dataPath;
                 rawData(validFileNum).fileName=thisDataFileName;
+                rawData(validFileNum).exportToAnalySize=exportToAnalySize;
                 
                 rawData(validFileNum).configInfo=tempStr(tabsId(1)+1:tabsId(2)-1);
                 rawData(validFileNum).type=tempStr(tabsId(2)+1:tabsId(3)-1);

@@ -168,8 +168,8 @@ function exportDataReport(statisticalParams,outputConfig)
 %  outputConfig.
 %         outputPath: full path of the output files
 %       prefixString: Prefixes for archive file names
-%           figWidth: Width of particle grading curve canvas (cm)
-%          figHeight: height of particle grading curve canvas (cm)
+% GradationCurveFigWidth: figure width of gradation curve, in unit of cm
+%GradationCurveFigHeight: figure height of gradation curve, in unit of cm
 %           language: 
 %               ='cn'   Particle grading curves are labeled in Chinese
 %               ='en'   Particle grading curves are labeled in English
@@ -193,7 +193,9 @@ figureId=-1;
 exportTime=datetime("now");
 exportTime.Format="yyyyMMddHHmmss";
 [~,~]=mkdir([outputConfig.outputPath]); %if not eixst, create it
-[~,~]=mkdir([outputConfig.outputPath,'figures']); %if not eixst, create it
+if outputConfig.exportGradingCurve
+    [~,~]=mkdir([outputConfig.outputPath,'figures']); %if not eixst, create it
+end
 
 if outputConfig.exportMetadata
     outputMetadatafileName=[outputConfig.outputPath,outputConfig.prefixString,'_Metadata_',char(exportTime),'.csv'];
@@ -342,12 +344,7 @@ for iSample=1:nSample
         end
     end
     if outputConfig.exportGradingCurve
-        figureId=plotcomulativeCurve(statisticalParams(iSample)...
-            ,[outputConfig.outputPath,'figures\']...
-            ,[num2str(statisticalParams(iSample).sampleId),'-',statisticalParams(iSample).sampleName]...
-            ,outputConfig.figWidth...
-            ,outputConfig.figHeight...
-            ,outputConfig.language);
+        figureId=plotcomulativeCurve(statisticalParams(iSample),outputConfig);
     end
 end
 

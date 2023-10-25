@@ -1,14 +1,14 @@
-function userSettings=readUserSettings(userSettingFileName)
+function sampleSettings=readSampleSettings(sampleSettingFileName)
 %----------------------------------------------------------------------------------------------------
 % @file name:   readUserSettings.m
-% @description: Read the contents of the user settings information file
+% @description: Read the contents of the sample settings information file
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
 % @version:     Ver1.0, 2023.01.22
 %----------------------------------------------------------------------------------------------------
 % @param:
-% userSettingFileName, file name
+% sampleSettingFileName, file name
 % @return: 
-% userSettings(nSample).
+% sampleSettings(nSample).
 %            dataPath: path of the raw data
 %            fileName: file name of the raw data
 %                name: sample name
@@ -41,9 +41,9 @@ function userSettings=readUserSettings(userSettingFileName)
 % @references:
 % NONE
 %----------------------------------------------------------------------------------------------------
-if exist(userSettingFileName,"file")==false
-    userSettings=[];
+if exist(sampleSettingFileName,"file")==false
+    sampleSettings=[];
     return;
 end
 
-userSettings=readtable(userSettingFileName,'ReadVariableNames',true,'Delimiter','\t');
+sampleSettings=readtable(sampleSettingFileName,'ReadVariableNames',true,'Delimiter','\t');

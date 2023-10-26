@@ -13,7 +13,7 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %  MIN_CHANNEL_SIZE_UM: lower limit of instrument detection (um), should be greater than 0, default is 0.01um
 %  MAX_CHANNEL_SIZE_UM: upper limit of instrument detection (um), default is 10mm
 %         instrumentId: = 1, coulter LS Serials; =11, camsizer X2; =21, malvern MasterSizer Serials
-% sampleSettings(nSample).
+% sampleSettings.
 %            dataPath: path of the raw data
 %            fileName: file name of the raw data
 %                name: sample name

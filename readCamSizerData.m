@@ -79,7 +79,7 @@ function rawData=readCamSizerData(userSettings,sampleSettings)
 %              conv3: Convexity = sqrt(real area / convex particle area)
 %             rdnsc3: Roundness, ratio of the averaged radius of curvature of all convex regions to the circumscribed cricle of the particle
 %                pdv: volume-based number of particle detections
-%    channelMeanSize: mean value of the particle size
+%    channelMeanSize: mean value of the particle size, um, only valid in CamsizerX2 data
 %channelSize_xFe_avg: average feret diameter
 %channelSize_xMa_avg: average martin diameter
 % channelSize_xc_avg: average chord diameter

@@ -67,36 +67,36 @@ A matlab package for processing sediment grain size and shape with support for C
   - =`Folk1954`  , `gravel`==0
 - `upSize_GBT12763`: upper limit size of the channels which are defined in GBT12763, (um)
 - `Q3_GBT12763`: cumulative volume percentage of the channels which are defined in GBT12763, (%)
-- `spht_50_2`: median value of sphericity, calculated using the original exported accumulation curve of particle shape
-- `spht_m_2`: mean value of sphericity, calculated using the original exported accumulation curve of particle shape
-- `b_l_50_2`: median value of aspect ratio, calculated using the original exported accumulation curve of particle shape
-- `b_l_m_2`: mean value of aspect ratio, calculated using the original exported accumulation curve of particle shape
-- `B_LRec_50_2`: median value of minimum aspect ratio, calculated using the original exported accumulation curve of particle shape
-- `B_LRec_m_2`: mean value of minimum aspect ratio, calculated using the original exported accumulation curve of particle shape
-- `symm_50_2`: median value of symmetry, calculated using the original exported accumulation curve of particle shape
-- `symm_m_2`: mean value of symmetry, calculated using the original exported accumulation curve of particle shape
-- `rdnsc_50_2`: median value of roundness, calculated using the original exported accumulation curve of particle shape
-- `rdnsc_m_2`: mean value of roundness, calculated using the original exported accumulation curve of particle shape
-- `conv_50_2`: median value of convexity, calculated using the original exported accumulation curve of particle shape
-- `conv_m_2`: mean value of convexity, calculated using the original exported accumulation curve of particle shape
-- `sigmav_50_2`: median value of sigmav?, calculated using the original exported accumulation curve of particle shape
-- `sigmav_m_2`: mean value of sigmav?, calculated using the original exported accumulation curve of particle shape
-- `spht_50`: median value of sphericity, calculated using the grainsize indexed particle shape
-- `spht_m`: mean value of sphericity, calculated using the grainsize indexed particle shape
-- `b_l_50`: median value of aspect ratio, calculated using the grainsize indexed particle shape
-- `b_l_m`: mean value of aspect ratio, calculated using the grainsize indexed particle shape
-- `B_LRec_50`: median value of minimum aspect ratio, calculated using the grainsize indexed particle shape
-- `B_LRec_m`: mean value of minimum aspect ratio, calculated using the grainsize indexed particle shape
-- `symm_50`: median value of symmetry, calculated using the grainsize indexed particle shape
-- `symm_m`: mean value of symmetry, calculated using the grainsize indexed particle shape
-- `rdnsc_50`: median value of roundness, calculated using the grainsize indexed particle shape
-- `rdnsc_m`: mean value of roundness, calculated using the grainsize indexed particle shape
-- `conv_50`: median value of convexity, calculated using the grainsize indexed particle shape
-- `conv_m`: mean value of convexity, calculated using the grainsize indexed particle shape
-- `sigmav_50`: median value of sigmav?, calculated using the grainsize indexed particle shape
-- `sigmav_m`: mean value of sigmav?, calculated using the grainsize indexed particle shape
-- `sfCorey_50`: median value of Corey shape factor, sfCorey=xMa_min/sqrt(xFe_min*xFe_max), calculated using the grainsize indexed  particle shape
-- `sfCorey_m`: mean value of Corey shape factor, calculated using the grainsize indexed  particle shape
+- `spht_50_2`: median of sphericity, inferred from the original exported accumulation curve of particle shape
+- `spht_m_2`: mean of sphericity, inferred from the original exported accumulation curve of particle shape
+- `b_l_50_2`: median of aspect ratio, inferred from the original exported accumulation curve of particle shape
+- `b_l_m_2`: mean of aspect ratio, inferred from the original exported accumulation curve of particle shape
+- `B_LRec_50_2`: median of minimum aspect ratio, inferred from the original exported accumulation curve of particle shape
+- `B_LRec_m_2`: mean of minimum aspect ratio, inferred from the original exported accumulation curve of particle shape
+- `symm_50_2`: median of symmetry, inferred from the original exported accumulation curve of particle shape
+- `symm_m_2`: mean of symmetry, inferred from the original exported accumulation curve of particle shape
+- `rdnsc_50_2`: median of roundness, inferred from the original exported accumulation curve of particle shape
+- `rdnsc_m_2`: mean of roundness, inferred from the original exported accumulation curve of particle shape
+- `conv_50_2`: median of convexity, inferred from the original exported accumulation curve of particle shape
+- `conv_m_2`: mean of convexity, inferred from the original exported accumulation curve of particle shape
+- `sigmav_50_2`: median of sigmav?, inferred from the original exported accumulation curve of particle shape
+- `sigmav_m_2`: mean of sigmav?, inferred from the original exported accumulation curve of particle shape
+- `spht_50`: median of sphericity, inferred from the grainsize indexed particle shape
+- `spht_m`: mean of sphericity, inferred from the grainsize indexed particle shape
+- `b_l_50`: median of aspect ratio, inferred from the grainsize indexed particle shape
+- `b_l_m`: mean of aspect ratio, inferred from the grainsize indexed particle shape
+- `B_LRec_50`: median of minimum aspect ratio, inferred from the grainsize indexed particle shape
+- `B_LRec_m`: mean of minimum aspect ratio, inferred from the grainsize indexed particle shape
+- `symm_50`: median of symmetry, inferred from the grainsize indexed particle shape
+- `symm_m`: mean of symmetry, inferred from the grainsize indexed particle shape
+- `rdnsc_50`: median of roundness, inferred from the grainsize indexed particle shape
+- `rdnsc_m`: mean of roundness, inferred from the grainsize indexed particle shape
+- `conv_50`: median of convexity, inferred from the grainsize indexed particle shape
+- `conv_m`: mean of convexity, inferred from the grainsize indexed particle shape
+- `sigmav_50`: median of sigmav?, inferred from the grainsize indexed particle shape
+- `sigmav_m`: mean of sigmav?, inferred from the grainsize indexed particle shape
+- `sfCorey_50`: median of Corey shape factor, sfCorey=xMa_min/sqrt(xFe_min*xFe_max), inferred from the grainsize indexed  particle shape
+- `sfCorey_m`: mean of Corey shape factor, inferred from the grainsize indexed  particle shape
 - `userComponent(nComponents)`: parameters of the user-specified components
   - `.upSize`: upper size of the user-specified components
   - `.downSize`: lower size of the user-specified components
@@ -106,14 +106,14 @@ A matlab package for processing sediment grain size and shape with support for C
   - `.sigma_Mcmanus`: sorting (Mcmanus method)
   - `.sk_Mcmanus`: skewness (Mcmanus method)
   - `.kg_Mcmanus`: Kurtosis (Mcmanus method)
-  - `.spht_m`: mean value of sphericity
-  - `.symm_m`: mean value of symmetry
-  - `.b_l_m`: mean value of aspect ratio
-  - `.B_LRec_m`: mean value of minimum aspect ratio
-  - `.sigmav_m`: mean value of sigmav?
-  - `.conv_m`: mean value of convexity
-  - `.rdnsc_m`: mean value of roundness
-  - `.sfCorey_m`: mean value of Corey shape factor
+  - `.spht_m`: mean of sphericity
+  - `.symm_m`: mean of symmetry
+  - `.b_l_m`: mean of aspect ratio
+  - `.B_LRec_m`: mean of minimum aspect ratio
+  - `.sigmav_m`: mean of sigmav?
+  - `.conv_m`: mean of convexity
+  - `.rdnsc_m`: mean of roundness
+  - `.sfCorey_m`: mean of Corey shape factor
 ## References
 - Bagheri, G. H., C. Bonadonna, I. Manzella, and P. Vonlanthen. “On the Characterization of Size and Shape of Irregular Particles.” Powder Technology 270 (January 1, 2015): 141–53. https://doi.org/10.1016/j.powtec.2014.10.015.
 - Folk, R.L. and Ward, W.C. (1957) A Study in the Significance of Grain-Size Parameters. Journal of Sedimentary Petrology, 27, 3-26.https://doi.org/10.1306/74D70646-2B21-11D7-8648000102C1865D

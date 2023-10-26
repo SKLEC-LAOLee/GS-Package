@@ -1,22 +1,33 @@
-function rawData=readMalvernData(dataPath,simpleProcessFlag,userSettingFileName,userDefinedValidSizeLim,forceReadRawDataFlag,MIN_CHANNEL_SIZE_MM,MAX_CHANNEL_SIZE_MM)
+function rawData=readMalvernData(userSettings,sampleSettings)
 %----------------------------------------------------------------------------------------------------
 % @file name:   readMalvernData.m
 % @description: Read text reports exported by Malvern MasterSizer 2000/3000 software.
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
 % @version:     Ver1.1, 10/21/2023
 %----------------------------------------------------------------------------------------------------
-% dataPath, full path of the data files
-% simpleProcessFlag, simple processing mode (no configuration file information is read)
-%            = true  enable "userDefinedValidSizeLim", sample auto-numbering with the same groupId
-%            = false disable "userDefinedValidSizeLim", get settings from "userSettingFileName"
-% userSettingFileName, file of user settings (full path)
-% userDefinedValidSizeLim, valid range of particle size [min_mm,max_mm]
-% forceReadRawDataFlag,
-%            = true  allways read data from "*.mal" file
-%            = false load the rawData.mat if exists in the dataPath; otherwise, read data from "*.mal" file
-% MIN_CHANNEL_SIZE_MM, lower limit of instrument detection (mm), should be greater than 0, default is 0.1um
-% MAX_CHANNEL_SIZE_MM, upper limit of instrument detection (mm), default is 20mm
-%
+% userSettings.
+%             dataPath: full path of the data files
+% forceReadRawDataFlag:
+%            = true  allways read data from raw files
+%            = false load the rawData.mat if exists in the dataPath; otherwise, read data from raw files
+%  MIN_CHANNEL_SIZE_UM: lower limit of instrument detection (um), should be greater than 0, default is 0.01um
+%  MAX_CHANNEL_SIZE_UM: upper limit of instrument detection (um), default is 10mm
+%         instrumentId: = 1, coulter LS Serials; =11, camsizer X2; =21, malvern MasterSizer Serials
+% sampleSettings.
+%            dataPath: path of the raw data
+%            fileName: file name of the raw data
+%                name: sample name
+%            sampleId: sample id, numeric and unique
+%             discard: discard flag
+%                      =0, the sample data is valid
+%                      =1, discard the sample data
+%        minValidSize: minimum valid particle size, in unit of um
+%        maxValidSize: maximum valid particle size, in unit of um
+%           groupName: Name of sample grouping
+%             groupId: id of sample grouping, numeric and unique
+%   exportToAnalySize: export the sample data to AnalySize
+%                      =0, disable
+%                      =1, enable
 % @return: 
 % rawData.
 %           dataPath: full path of the data file
@@ -109,45 +120,20 @@ function rawData=readMalvernData(dataPath,simpleProcessFlag,userSettingFileName,
 %     .Output filename suffixes only allowed as *.mal
 %----------------------------------------------------------------------------------------------------
 rawData={};
-if ~exist('simpleProcessFlag','var')
-    simpleProcessFlag = true;
-    userSettingFileName='';
-end
 
-if ~exist('userDefinedValidSizeLim','var')
-    userDefinedValidSizeLim = [-inf,inf];
-end
-if ~exist('forceReadRawDataFlag','var')
-    forceReadRawDataFlag = true;
-end
-
-if ~exist('MIN_CHANNEL_SIZE_MM','var')
-    MIN_CHANNEL_SIZE_MM = 0.0001;
-end
-MIN_CHANNEL_SIZE_UM=MIN_CHANNEL_SIZE_MM*1000;
-
-if ~exist('MAX_CHANNEL_SIZE_MM','var')
-    MAX_CHANNEL_SIZE_MM = 20;
-end
-MAX_CHANNEL_SIZE_UM=MAX_CHANNEL_SIZE_MM*1000;
-
-if ~exist('forceReadRawDataFlag','var')
-    forceReadRawDataFlag = false;
-end
-
-if dataPath(end)~='\'
-    dataPath(end+1)='\';
+if userSettings.dataPath(end)~='\'
+    userSettings.dataPath(end+1)='\';
 end
 
 hidWait=waitbar(0,'Reading Malvern data, please wait...');
-if exist([dataPath,'rawData.mat'],'file')&&(forceReadRawDataFlag==false)
-    load([dataPath,'rawData.mat'],'-mat','rawData');
+if exist([userSettings.dataPath,'rawData.mat'],'file')&&(userSettings.forceReadRawDataFlag==false)
+    load([userSettings.dataPath,'rawData.mat'],'-mat','rawData');
     close(hidWait);
     return;
 end
 
 suffix='.mal';
-tempVar=dir([dataPath,'*',suffix]);
+tempVar=dir([userSettings.dataPath,'*',suffix]);
 allFile=char(tempVar.name);
 fileNum=size(allFile,1);
 instrumentDataTable=[];
@@ -158,7 +144,7 @@ channelSize=channelSize(2:end);
 
 for iFile=1:fileNum
     thisDataFileName=allFile(iFile,:);
-    instrumentDataTable=[instrumentDataTable;readtable(strcat(dataPath,thisDataFileName),'FileType','text')];
+    instrumentDataTable=[instrumentDataTable;readtable(strcat(userSettings.dataPath,thisDataFileName),'FileType','text')];
 end
 [sampleNum,varNum]=size(instrumentDataTable);
 if sampleNum<1
@@ -170,47 +156,39 @@ if varNum~=110
     return;
 end
 
-backslashId=strfind(dataPath,'\');
+backslashId=strfind(userSettings.dataPath,'\');
 if length(backslashId)<=1
-    lastLevelDataPath=dataPath;  % root dir, for example: "c:\"
+    lastLevelDataPath=userSettings.dataPath;  % root dir, for example: "c:\"
 else
-    lastLevelDataPath=dataPath(backslashId(end-1)+1:backslashId(end)-1);
-end
-
-userDefinedValidSizeLim=userDefinedValidSizeLim*1000;
-%read user defined infomation.
-if simpleProcessFlag==false
-    userSettings=readUserSettings(userSettingFileName);
+    lastLevelDataPath=userSettings.dataPath(backslashId(end-1)+1:backslashId(end)-1);
 end
 %
 for iSample=1:sampleNum
     thisSampleName=instrumentDataTable.Var1{iSample};
     thisDiscardFlag=false;
     thisSampleId=nan;
-    validSizeLim=userDefinedValidSizeLim;
+    validSizeLim=[-inf,inf];
     thisGroupName='undefined';
     thisGroupId=-999;
     exportToAnalySize=1;
 
     thisSampleData=zeros(500,2);
-    diamChannelNum=0;
-    hightChannelNum=0;
 
     %read user defined infomation.
-    if simpleProcessFlag==false
-        userSetRecordNum=length(userSettings.name);
+    if ~isempty(sampleSettings)
+        userSetRecordNum=length(sampleSettings.name);
         for iSet=1:userSetRecordNum
             % sample search principle: file name and directory are the same
-            if (strcmpi(strrep(thisSampleName,' ',''),strrep(userSettings.name{iSet},' ',''))==true)&&(strcmpi(lastLevelDataPath,userSettings.dataPath{iSet})==true)
-                if userSettings.discard(iSet)==1
+            if (strcmpi(strrep(thisSampleName,' ',''),strrep(sampleSettings.name{iSet},' ',''))==true)&&(strcmpi(lastLevelDataPath,sampleSettings.dataPath{iSet})==true)
+                if sampleSettings.discard(iSet)==1
                     thisDiscardFlag=true;
                 end
-                thisSampleName=userSettings.name{iSet};
-                validSizeLim=[userSettings.minValidSize(iSet),userSettings.maxValidSize(iSet)];
-                thisGroupName=userSettings.groupName{iSet};
-                thisGroupId=userSettings.groupId(iSet);
-                thisSampleId=userSettings.sampleId(iSet);
-                exportToAnalySize=userSettings.exportToAnalySize(iSet);
+                thisSampleName=sampleSettings.name{iSet};
+                validSizeLim=[sampleSettings.minValidSize(iSet),sampleSettings.maxValidSize(iSet)];
+                thisGroupName=sampleSettings.groupName{iSet};
+                thisGroupId=sampleSettings.groupId(iSet);
+                thisSampleId=sampleSettings.sampleId(iSet);
+                exportToAnalySize=sampleSettings.exportToAnalySize(iSet);
                 break;
             end
         end
@@ -220,7 +198,7 @@ for iSample=1:sampleNum
     end
 
     validSampleNum=validSampleNum+1;
-    rawData(validSampleNum).instrumentId=21;
+    rawData(validSampleNum).instrumentId=userSettings.instrumentId;
     rawData(validSampleNum).sampleName=thisSampleName;
     if isnan(thisSampleId)
         thisSampleId=-validSampleNum;
@@ -228,7 +206,7 @@ for iSample=1:sampleNum
     rawData(validSampleNum).sampleId=thisSampleId;
     rawData(validSampleNum).groupName=thisGroupName;
     rawData(validSampleNum).groupId=thisGroupId;
-    rawData(validSampleNum).dataPath=dataPath;
+    rawData(validSampleNum).dataPath=userSettings.dataPath;
     rawData(validSampleNum).fileName=thisDataFileName;
     rawData(validSampleNum).exportToAnalySize=exportToAnalySize;
     rawData(validSampleNum).configInfo=instrumentDataTable.Var3{iSample};
@@ -250,7 +228,7 @@ for iSample=1:sampleNum
     q3=table2array(instrumentDataTable(iSample,10:end))';
     rawData(validSampleNum).p3=diff(q3);
     % reject the invalid components according to the user-defined "validSizeLim"
-    inValidId=(rawData(validSampleNum).channelUpSize<rawData(validSampleNum).validSizeLim(1)*1000)|(rawData(validSampleNum).channelDownSize>rawData(validSampleNum).validSizeLim(2)*1000);
+    inValidId=(rawData(validSampleNum).channelUpSize<rawData(validSampleNum).validSizeLim(1))|(rawData(validSampleNum).channelDownSize>rawData(validSampleNum).validSizeLim(2));
     newP3=rawData(validSampleNum).p3;
     newP3(inValidId)=0;
     newP3=newP3./sum(newP3).*100;
@@ -272,5 +250,5 @@ close(hidWait);
 if validSampleNum<1
     rawData=[];
 else
-    save([dataPath,'rawData.mat'],'rawData');
+    save([userSettings.dataPath,'rawData.mat'],'rawData');
 end

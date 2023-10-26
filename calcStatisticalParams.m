@@ -431,3 +431,4 @@ for iSample=1:nSample
     end
     %
 end
+save([userSettings.outputPath,'statisticalParams.mat'],'statisticalParams','-mat');

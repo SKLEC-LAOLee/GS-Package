@@ -1,23 +1,35 @@
-function rawData=readCoulterLsData(dataPath,simpleProcessFlag,userSettingFileName,userDefinedValidSizeLim,forceReadRawDataFlag,MIN_CHANNEL_SIZE_MM,MAX_CHANNEL_SIZE_MM)
+function rawData=readCoulterLsData(userSettings,sampleSettings)
 %----------------------------------------------------------------------------------------------------
 % @file name:   readCoulterLsData.m
 % @description: Batch read all *.$ls data files in the Coulter data directory
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
 % @version:     Ver1.1, 10/21/2023
 %----------------------------------------------------------------------------------------------------
-% dataPath, full path of the data files
-% simpleProcessFlag, simple processing mode (no configuration file information is read)
-%            = true  enable "userDefinedValidSizeLim", sample auto-numbering with the same groupId
-%            = false disable "userDefinedValidSizeLim", get settings from "userSettingFileName"
-% userSettingFileName, file of user settings (full path)
-% userDefinedValidSizeLim, valid range of particle size [min_mm,max_mm]
-% forceReadRawDataFlag,
-%            = true  allways read data from xle/xld files
-%            = false load the rawData.mat if exists in the dataPath; otherwise, read data from *.$ls files
-% MIN_CHANNEL_SIZE_MM, lower limit of instrument detection (mm), should be greater than 0, default is 0.1um
-% MAX_CHANNEL_SIZE_MM, upper limit of instrument detection (mm), default is 20mm
+% userSettings.
+%             dataPath: full path of the data files
+% forceReadRawDataFlag:
+%            = true  allways read data from raw files
+%            = false load the rawData.mat if exists in the dataPath; otherwise, read data from raw files
+%  MIN_CHANNEL_SIZE_UM: lower limit of instrument detection (um), should be greater than 0, default is 0.01um
+%  MAX_CHANNEL_SIZE_UM: upper limit of instrument detection (um), default is 10mm
+%         instrumentId: = 1, coulter LS Serials; =11, camsizer X2; =21, malvern MasterSizer Serials
+% sampleSettings(nSample).
+%            dataPath: path of the raw data
+%            fileName: file name of the raw data
+%                name: sample name
+%            sampleId: sample id, numeric and unique
+%             discard: discard flag
+%                      =0, the sample data is valid
+%                      =1, discard the sample data
+%        minValidSize: minimum valid particle size, in unit of um
+%        maxValidSize: maximum valid particle size, in unit of um
+%           groupName: Name of sample grouping
+%             groupId: id of sample grouping, numeric and unique
+%   exportToAnalySize: export the sample data to AnalySize
+%                      =0, disable
+%                      =1, enable
 %
-% @return: 
+% @return:
 % rawData.
 %           dataPath: full path of the data file
 %           fileName: file name of the xle/xld file
@@ -98,45 +110,20 @@ function rawData=readCoulterLsData(dataPath,simpleProcessFlag,userSettingFileNam
 % NONE
 %----------------------------------------------------------------------------------------------------
 rawData={};
-if ~exist('simpleProcessFlag','var')
-    simpleProcessFlag = true;
-    userSettingFileName='';
-end
 
-if ~exist('userDefinedValidSizeLim','var')
-    userDefinedValidSizeLim = [-inf,inf];
-end
-if ~exist('forceReadRawDataFlag','var')
-    forceReadRawDataFlag = true;
-end
-
-if ~exist('MIN_CHANNEL_SIZE_MM','var')
-    MIN_CHANNEL_SIZE_MM = 0.0001;
-end
-MIN_CHANNEL_SIZE_UM=MIN_CHANNEL_SIZE_MM*1000;
-
-if ~exist('MAX_CHANNEL_SIZE_MM','var')
-    MAX_CHANNEL_SIZE_MM = 20;
-end
-MAX_CHANNEL_SIZE_UM=MAX_CHANNEL_SIZE_MM*1000;
-
-if ~exist('forceReadRawDataFlag','var')
-    forceReadRawDataFlag = false;
-end
-
-if dataPath(end)~='\'
-    dataPath(end+1)='\';
+if userSettings.dataPath(end)~='\'
+    userSettings.dataPath(end+1)='\';
 end
 
 hidWait=waitbar(0,'Reading Coulter data, please wait...');
-if exist([dataPath,'rawData.mat'],'file')&&(forceReadRawDataFlag==false)
-    load([dataPath,'rawData.mat'],'-mat','rawData');
+if exist([userSettings.dataPath,'rawData.mat'],'file')&&(userSettings.forceReadRawDataFlag==false)
+    load([userSettings.dataPath,'rawData.mat'],'-mat','rawData');
     close(hidWait);
     return;
 end
 
 suffix='.$ls';
-tempVar=dir([dataPath,'*',suffix]);
+tempVar=dir([userSettings.dataPath,'*',suffix]);
 allFile=char(tempVar.name);
 sampleNum=size(allFile,1);
 validFileNum=0;
@@ -144,17 +131,11 @@ if sampleNum<1
     return;
 end
 
-backslashId=strfind(dataPath,'\');
+backslashId=strfind(userSettings.dataPath,'\');
 if length(backslashId)<=1
     lastLevelDataPath=dataPath;  % root dir, for example: "c:\"
 else
     lastLevelDataPath=dataPath(backslashId(end-1)+1:backslashId(end)-1);
-end
-
-userDefinedValidSizeLim=userDefinedValidSizeLim*1000;
-%read user defined infomation.
-if simpleProcessFlag==false
-    userSettings=readUserSettings(userSettingFileName);
 end
 %
 for iSample=1:sampleNum
@@ -166,7 +147,7 @@ for iSample=1:sampleNum
     thisSampleName=thisDataFileName(1:end-3);
     thisDiscardFlag=false;
     thisSampleId=nan;
-    validSizeLim=userDefinedValidSizeLim;
+    validSizeLim=[-inf,inf];
     thisGroupName='undefined';
     thisGroupId=-999;
     exportToAnalySize=1;
@@ -193,20 +174,20 @@ for iSample=1:sampleNum
         elseif contains(tempStr,'SampleID=')
             thisSampleName=strrep(tempStr,'SampleID=','');
             % retrieve user settings
-            if simpleProcessFlag==false
-                userSetRecordNum=length(userSettings.name);
+            if ~isempty(sampleSettings)
+                userSetRecordNum=length(sampleSettings.name);
                 for iSet=1:userSetRecordNum
                     % sample search principle: file name and directory are the same
-                    if (strcmpi(strrep(thisDataFileName,' ',''),strrep(userSettings.fileName{iSet},' ',''))==true)&&(strcmpi(lastLevelDataPath,userSettings.dataPath{iSet})==true)
-                        if userSettings.discard(iSet)==1
+                    if (strcmpi(strrep(thisDataFileName,' ',''),strrep(sampleSettings.fileName{iSet},' ',''))==true)&&(strcmpi(lastLevelDataPath,sampleSettings.dataPath{iSet})==true)
+                        if sampleSettings.discard(iSet)==1
                             thisDiscardFlag=true;
                         end
-                        thisSampleName=userSettings.name{iSet};
-                        validSizeLim=[userSettings.minValidSize(iSet),userSettings.maxValidSize(iSet)];
-                        thisGroupName=userSettings.groupName{iSet};
-                        thisGroupId=userSettings.groupId(iSet);
-                        thisSampleId=userSettings.sampleId(iSet);
-                        exportToAnalySize=userSettings.exportToAnalySize(iSet);
+                        thisSampleName=sampleSettings.name{iSet};
+                        validSizeLim=[sampleSettings.minValidSize(iSet),sampleSettings.maxValidSize(iSet)];
+                        thisGroupName=sampleSettings.groupName{iSet};
+                        thisGroupId=sampleSettings.groupId(iSet);
+                        thisSampleId=sampleSettings.sampleId(iSet);
+                        exportToAnalySize=sampleSettings.exportToAnalySize(iSet);
                         break;
                     end
                 end
@@ -216,7 +197,7 @@ for iSample=1:sampleNum
             end
 
             validFileNum=validFileNum+1;
-            rawData(validFileNum).instrumentId=01; %#ok<*AGROW>
+            rawData(validFileNum).instrumentId=userSettings.instrumentId;
             rawData(validFileNum).sampleName=thisSampleName;
             if isnan(thisSampleId)
                 thisSampleId=-validFileNum;
@@ -248,8 +229,8 @@ for iSample=1:sampleNum
             rawData(validFileNum).particleAbsorptivity=omris(10);
         elseif contains(tempStr,'AnalyzePIDS=')
             rawData(validFileNum).configInfo=[rawData(validFileNum).configInfo,',',tempStr,',SN= ',serialNumber];
-        elseif strcmpi(tempStr,'LSType= 330')==true
-            rawData(validFileNum).instrumentId=01;
+        %elseif strcmpi(tempStr,'LSType= 330')==true
+        %    rawData(validFileNum).instrumentId=userSettings.instrumentId;
         elseif contains(tempStr,'SerialNumber=')==true
             serialNumber=strrep(tempStr,'SerialNumber= ','');
         elseif strcmpi(tempStr,'[#Bindiam]')==true
@@ -305,14 +286,15 @@ for iSample=1:sampleNum
     fclose(fidIn);
 
     if getValidDataFlag==true
-        rawData(validFileNum).channelDownSize=[MIN_CHANNEL_SIZE_UM;thisSampleData(1:end-1,1)];
+        rawData(validFileNum).channelDownSize=[userSettings.MIN_CHANNEL_SIZE_UM;thisSampleData(1:end-1,1)];
         rawData(validFileNum).channelUpSize=[thisSampleData(1:end,1)];
-        rawData(validFileNum).channelUpSize(rawData(validFileNum).channelUpSize>MAX_CHANNEL_SIZE_UM)=MAX_CHANNEL_SIZE_UM;
+        userSettings.MAX_CHANNEL_SIZE_UM=max([userSettings.MAX_CHANNEL_SIZE_UM,max(rawData(validFileNum).channelDownSize)]);
+        rawData(validFileNum).channelUpSize(rawData(validFileNum).channelUpSize>userSettings.MAX_CHANNEL_SIZE_UM)=userSettings.MAX_CHANNEL_SIZE_UM;
         thisSampleLogMidSize=(log2(rawData(validFileNum).channelDownSize)+log2(rawData(validFileNum).channelUpSize))./2;
         rawData(validFileNum).channelMidSize=2.^(thisSampleLogMidSize);
         rawData(validFileNum).p3=thisSampleData(:,2);
         % reject the invalid components according to the user-defined "validSizeLim"
-        inValidId=(rawData(validFileNum).channelUpSize<rawData(validFileNum).validSizeLim(1)*1000)|(rawData(validFileNum).channelDownSize>rawData(validFileNum).validSizeLim(2)*1000);
+        inValidId=(rawData(validFileNum).channelUpSize<rawData(validFileNum).validSizeLim(1))|(rawData(validFileNum).channelDownSize>rawData(validFileNum).validSizeLim(2));
         newP3=rawData(validFileNum).p3;
         newP3(inValidId)=0;
         newP3=newP3./sum(newP3).*100;
@@ -337,5 +319,5 @@ close(hidWait);
 if validFileNum<1
     rawData=[];
 else
-    save([dataPath,'rawData.mat'],'rawData');
+    save([userSettings.dataPath,'rawData.mat'],'rawData');
 end

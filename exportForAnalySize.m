@@ -7,7 +7,7 @@ function exportForAnalySize(statisticalParams,outputConfig)
 %----------------------------------------------------------------------------------------------------
 % @param:
 % statisticalParams.
-%           dataPath: full path of the data file
+%           dataPath: full path of the raw data file
 %           fileName: file name of the raw data file
 %       instrumentId: instrument code
 %                     = 1, coulter LS 13320
@@ -54,7 +54,6 @@ function exportForAnalySize(statisticalParams,outputConfig)
 %              conv3: Convexity = sqrt(real area / convex particle area)
 %             rdnsc3: Roundness, ratio of the averaged radius of curvature of all convex regions to the circumscribed cricle of the particle
 %                pdv: volume-based number of particle detections
-%    channelMeanSize: mean value of the particle size
 %  outputConfig.
 %         outputPath: full path of the output files
 %       prefixString: Prefixes for archive file names

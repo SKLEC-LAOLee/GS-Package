@@ -9,7 +9,7 @@ function [classificationCode,classificationMethod]=getclassificationCode(gravel,
 % gravel, (2mm,inf] volume percentage(%)
 % sand, (63um,2mm] volume percentage(%)
 % silt, (3.9um,63um] volume percentage(%)
-% clay, （0,3.9um] volume percentage(%)
+% clay, (0,3.9um] volume percentage(%)
 % @return:
 % classificationCode,
 %             have gravel: following Folk(1954) method, see folk1954.fig

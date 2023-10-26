@@ -281,9 +281,9 @@ for iSample=1:nSample
     statisticalParams(iSample).dm=sum(rawData(iSample).channelMidSize.*rawData(iSample).adjustP3)./100; %um
     channelMidSize_phi=-log2(rawData(iSample).channelMidSize./1000);
     statisticalParams(iSample).dm_Mcmanus   =sum(channelMidSize_phi.*rawData(iSample).adjustP3)./100; %phi
-    statisticalParams(iSample).sigma_Mcmanus=(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^2.*rawData(iSample).adjustP3)./100).^(1./2);
-    statisticalParams(iSample).sk_Mcmanus   =(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^3.*rawData(iSample).adjustP3)./100).^(1./3);
-    statisticalParams(iSample).kg_Mcmanus   =(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^4.*rawData(iSample).adjustP3)./100).^(1./4);
+    statisticalParams(iSample).sigma_Mcmanus=nthroot(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^2.*rawData(iSample).adjustP3)./100,2);
+    statisticalParams(iSample).sk_Mcmanus   =nthroot(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^3.*rawData(iSample).adjustP3)./100,3);
+    statisticalParams(iSample).kg_Mcmanus   =nthroot(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^4.*rawData(iSample).adjustP3)./100,4);
 
     phi05=-log2(statisticalParams(iSample).d95./1000);
     phi16=-log2(statisticalParams(iSample).d84./1000);
@@ -401,9 +401,9 @@ for iSample=1:nSample
         statisticalParams(iSample).userComponent.fraction(iUserComponent)=sum(rawData(iSample).adjustP3(thisComponentlId));
         statisticalParams(iSample).userComponent.dm(iUserComponent) =sum(thisComponentMidSizeUm.*thisComponentP3);%mean size, um
         statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)   =sum(thisComponentMidSizePhi.*thisComponentP3); %mean size, phi
-        statisticalParams(iSample).userComponent.sigma_Mcmanus(iUserComponent)=(sum((thisComponentMidSizePhi-statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)).^2.*thisComponentP3)).^(1./2);
-        statisticalParams(iSample).userComponent.sk_Mcmanus(iUserComponent)   =(sum((thisComponentMidSizePhi-statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)).^3.*thisComponentP3)).^(1./3);
-        statisticalParams(iSample).userComponent.kg_Mcmanus(iUserComponent)   =(sum((thisComponentMidSizePhi-statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)).^4.*thisComponentP3)).^(1./4);
+        statisticalParams(iSample).userComponent.sigma_Mcmanus(iUserComponent)=nthroot(sum((thisComponentMidSizePhi-statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)).^2.*thisComponentP3),2);
+        statisticalParams(iSample).userComponent.sk_Mcmanus(iUserComponent)   =nthroot(sum((thisComponentMidSizePhi-statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)).^3.*thisComponentP3),3);
+        statisticalParams(iSample).userComponent.kg_Mcmanus(iUserComponent)   =nthroot(sum((thisComponentMidSizePhi-statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)).^4.*thisComponentP3),4);
 
         if rawData(iSample).haveShapeData>0
             statisticalParams(iSample).userComponent.spht_m(iUserComponent) =sum(rawData(iSample).spht3(thisComponentlId).*thisComponentP3);%mean spht

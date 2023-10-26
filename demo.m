@@ -6,7 +6,7 @@
 %----------------------------------------------------------------------------------------------------
 userSettings.sampleSettingFileName='.\testData\camSizerX2\sampleSettings.txt'; %sample settings information file
 userSettings.dataPath='.\testData\camSizerX2\';                     %full path of the raw data files
-userSettings.outputPath='.\testData\camSizerX2\outputs\';           %full path of the output files
+userSettings.outputPath='E:\test\';                                 %full path of the output files
 userSettings.prefixString='testCamSizer';                           %prefixes for archive file names
 userSettings.instrumentId=11;                                        %= 1, coulter LS Serials; =11, camsizer X2; =21, malvern MasterSizer Serials
 userSettings.forceReadRawData=true;                                 %= true, allways read data from raw files;= false, load the rawData.mat if exists in the dataPath; otherwise, read data from raw files

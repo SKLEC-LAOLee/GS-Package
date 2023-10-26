@@ -8,7 +8,7 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 % @param:
 % rawData.
 %           dataPath: full path of the data file
-%           fileName: file name of the xle/xld file
+%           fileName: file name of the raw data file
 %       instrumentId: instrument code
 %                     = 1, coulter LS 13320
 %                     =11, camsizer X2
@@ -174,17 +174,17 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %      sigma_Mcmanus: sorting, Mcmanus
 %         sk_Mcmanus: skewness, Mcmanus
 %         kg_Mcmanus: Kurtosis, Mcmanus
-%        dm_GBT12763: mean size(phi), GBT12763
-%     sigma_GBT12763: sorting, GBT12763
-%        sk_GBT12763: skewness, GBT12763
-%        kg_GBT12763: Kurtosis, GBT12763
+%        dm_Folk1954: mean size(um), GBT12763
+%     sigma_Folk1954: sorting, GBT12763
+%        sk_Folk1954: skewness, GBT12763
+%        kg_Folk1954: Kurtosis, GBT12763
 %       sortingLevel: sorting level(GBT 12763.8-2007)
-%                     very good(1),             sigma_GBT12763 < 0.35 phi
-%                          good(2), 0.35 phi <= sigma_GBT12763 < 0.71 phi
-%                        middle(3), 0.71 phi <= sigma_GBT12763 < 1.00 phi
-%                           bad(4), 1.00 phi <= sigma_GBT12763 < 4.00 phi
-%                      very bad(5), 4.00 phi <= sigma_GBT12763
-%           variance: variance =sqrt(D84_um/D16_um)
+%                     very good(1),             sigma_Folk1954 < 0.35 phi
+%                          good(2), 0.35 phi <= sigma_Folk1954 < 0.71 phi
+%                        middle(3), 0.71 phi <= sigma_Folk1954 < 1.00 phi
+%                           bad(4), 1.00 phi <= sigma_Folk1954 < 4.00 phi
+%                      very bad(5), 4.00 phi <= sigma_Folk1954
+%           variance: variance =sqrt(D84_phi/D16_phi)
 %             gravel: (2mm, inf](%)
 %               sand: (63um,2mm](%)
 %               silt: (3.9um,63um](%)
@@ -230,7 +230,7 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %      userComponent: parameters of the user-specified components
 %             .upSize       : upper size of the user-specified components
 %             .downSize     : lower size of the user-specified components
-%             .density      : percentage of all
+%             .fraction     : percentage of all
 %             .dm           : mean size in unit of um
 %             .dm_Mcmanus   : mean size in unit of phi(Mcmanus method)
 %             .sigma_Mcmanus: sorting (Mcmanus method)
@@ -258,14 +258,14 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %----------------------------------------------------------------------------------------------------
 statisticalParams=rawData;
 nSample=length(rawData);
-stdSortingLevel=[-inf 0.35,0.71,1.00,4.00];
+stdSortingLevel=[-inf 0.35,0.71,1.00,4.00]; %GBT12763.8
 for iSample=1:nSample
     %--------------------------------------
     %for particle size of complete sample
     %--------------------------------------
     thisQ3=rawData(iSample).adjustQ3+(1:length(rawData(iSample).adjustQ3))'.*1e-7; %Add incremental minima to avoid non-monotonic incremental problems
     try
-        Di=interp1(thisQ3,rawData(iSample).channelUpSize,[5 10 16 25 50 75 84 90 95]); %um
+        Di=interp1(thisQ3,rawData(iSample).channelUpSize,[5 10 16 25 50 75 84 90 95]); %um, passing below
     catch
         continue;
     end
@@ -278,9 +278,9 @@ for iSample=1:nSample
     statisticalParams(iSample).d84=Di(7);
     statisticalParams(iSample).d90=Di(8);
     statisticalParams(iSample).d95=Di(9);
-    statisticalParams(iSample).dm=sum(rawData(iSample).channelMidSize.*rawData(iSample).adjustP3)./100;
+    statisticalParams(iSample).dm=sum(rawData(iSample).channelMidSize.*rawData(iSample).adjustP3)./100; %um
     channelMidSize_phi=-log2(rawData(iSample).channelMidSize./1000);
-    statisticalParams(iSample).dm_Mcmanus   =sum(channelMidSize_phi.*rawData(iSample).adjustP3)./100;
+    statisticalParams(iSample).dm_Mcmanus   =sum(channelMidSize_phi.*rawData(iSample).adjustP3)./100; %phi
     statisticalParams(iSample).sigma_Mcmanus=(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^2.*rawData(iSample).adjustP3)./100).^(1./2);
     statisticalParams(iSample).sk_Mcmanus   =(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^3.*rawData(iSample).adjustP3)./100).^(1./3);
     statisticalParams(iSample).kg_Mcmanus   =(sum((channelMidSize_phi-statisticalParams(iSample).dm_Mcmanus).^4.*rawData(iSample).adjustP3)./100).^(1./4);
@@ -292,15 +292,15 @@ for iSample=1:nSample
     phi75=-log2(statisticalParams(iSample).d25./1000);
     phi84=-log2(statisticalParams(iSample).d16./1000);
     phi95=-log2(statisticalParams(iSample).d05./1000);
-    statisticalParams(iSample).dm_GBT12763=mean(phi16+phi50+phi84); %phi
-    statisticalParams(iSample).sigma_GBT12763=((phi84-phi16)/4+(phi95-phi05)/6.6);%phi
+    statisticalParams(iSample).dm_Folk1954=2^(-(phi16+phi50+phi84)/3)*1000; %um, Folk(1954)
+    statisticalParams(iSample).sigma_Folk1954=(phi84-phi16)/4+(phi95-phi05)/6.6;%Folk(1954)
     tempVar11=(phi84+phi16-2*phi50);
     tempVar12=2*(phi84-phi16);
     tempVar21=(phi95+phi05-2*phi50);
     tempVar22=2*(phi95-phi05);
-    statisticalParams(iSample).sk_GBT12763=tempVar11/tempVar12+tempVar21/tempVar22;
-    statisticalParams(iSample).kg_GBT12763=(phi95-phi05)/(phi75-phi25)/2.44;
-    levelId=find(statisticalParams(iSample).sigma_GBT12763>=stdSortingLevel);
+    statisticalParams(iSample).sk_Folk1954=tempVar11/tempVar12+tempVar21/tempVar22;
+    statisticalParams(iSample).kg_Folk1954=(phi95-phi05)/(phi75-phi25)/2.44;
+    levelId=find(statisticalParams(iSample).sigma_Folk1954>=stdSortingLevel);
     statisticalParams(iSample).sortingLevel=levelId(end);
     statisticalParams(iSample).variance=sqrt(phi84/phi16);
     
@@ -321,8 +321,8 @@ for iSample=1:nSample
     statisticalParams(iSample).userComponent.Content=diff(levelFreq);
 
     %for GBT12763.8
-    statisticalParams(iSample).pai_GBT12763=11:-1:-3;
-    gbSizeLevel=(2.^(-statisticalParams(iSample).pai_GBT12763)).*1000;
+    statisticalParams(iSample).phi_GBT12763=11:-1:-3;
+    gbSizeLevel=(2.^(-statisticalParams(iSample).phi_GBT12763)).*1000;
     gbLevelFreq=interp1(rawData(iSample).channelUpSize,rawData(iSample).adjustQ3,gbSizeLevel);
     zeroId=isnan(gbLevelFreq)&(gbSizeLevel<rawData(iSample).channelUpSize(1));
     gbLevelFreq(zeroId)=0;
@@ -396,9 +396,9 @@ for iSample=1:nSample
         thisComponentP3=rawData(iSample).adjustP3(thisComponentlId)./sum(rawData(iSample).adjustP3(thisComponentlId)); %normalized to 1
         thisComponentUpSize=rawData(iSample).channelUpSize(thisComponentlId);
         thisComponentDownSize=rawData(iSample).channelDownSize(thisComponentlId);
-        thisComponentMidSizeUm=2.^((log2(thisComponentUpSize)+log2(thisComponentDownSize))/2); %logarithmic midpoint, um
-        thisComponentMidSizePhi=-log2(thisComponentMidSizeUm./1000);
-        statisticalParams(iSample).userComponent.density(iUserComponent)=sum(rawData(iSample).adjustP3(thisComponentlId));
+        thisComponentMidSizePhi=(-log2(thisComponentUpSize./1000)-log2(thisComponentDownSize./1000))./2;
+        thisComponentMidSizeUm=2.^(-thisComponentMidSizePhi).*1000; %logarithmic midpoint, um
+        statisticalParams(iSample).userComponent.fraction(iUserComponent)=sum(rawData(iSample).adjustP3(thisComponentlId));
         statisticalParams(iSample).userComponent.dm(iUserComponent) =sum(thisComponentMidSizeUm.*thisComponentP3);%mean size, um
         statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)   =sum(thisComponentMidSizePhi.*thisComponentP3); %mean size, phi
         statisticalParams(iSample).userComponent.sigma_Mcmanus(iUserComponent)=(sum((thisComponentMidSizePhi-statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)).^2.*thisComponentP3)).^(1./2);
@@ -406,18 +406,14 @@ for iSample=1:nSample
         statisticalParams(iSample).userComponent.kg_Mcmanus(iUserComponent)   =(sum((thisComponentMidSizePhi-statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent)).^4.*thisComponentP3)).^(1./4);
 
         if rawData(iSample).haveShapeData>0
-            statisticalParams(iSample).userComponent.spht_m(iUserComponent) =sum(rawData(iSample).spht3(thisComponentlId).*thisComponentP3);%meanspht
-            statisticalParams(iSample).userComponent.symm_m(iUserComponent) =sum(rawData(iSample).symm3(thisComponentlId).*thisComponentP3);%meansymm
-            statisticalParams(iSample).userComponent.b_l_m(iUserComponent) =sum(rawData(iSample).b_l3(thisComponentlId).*thisComponentP3);%meanb/l
-            statisticalParams(iSample).userComponent.B_LRec_m(iUserComponent) =sum(rawData(iSample).B_LRec3(thisComponentlId).*thisComponentP3);%meanB_LRec
-            statisticalParams(iSample).userComponent.sigmav_m(iUserComponent) =sum(rawData(iSample).sigmav3(thisComponentlId).*thisComponentP3);%meansigmav
-            statisticalParams(iSample).userComponent.conv_m(iUserComponent) =sum(rawData(iSample).conv3(thisComponentlId).*thisComponentP3);%meanconv
-            statisticalParams(iSample).userComponent.rdnsc_m(iUserComponent) =sum(rawData(iSample).rdnsc3(thisComponentlId).*thisComponentP3);%meanrdnsc
-            if sfCoreyEnabled==true
-                statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent) =sum(rawData(iSample).sfCorey(thisComponentlId).*thisComponentP3);
-            else
-                statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent) =nan;
-            end
+            statisticalParams(iSample).userComponent.spht_m(iUserComponent) =sum(rawData(iSample).spht3(thisComponentlId).*thisComponentP3);%mean spht
+            statisticalParams(iSample).userComponent.symm_m(iUserComponent) =sum(rawData(iSample).symm3(thisComponentlId).*thisComponentP3);%mean symm
+            statisticalParams(iSample).userComponent.b_l_m(iUserComponent) =sum(rawData(iSample).b_l3(thisComponentlId).*thisComponentP3);%mean b/l
+            statisticalParams(iSample).userComponent.B_LRec_m(iUserComponent) =sum(rawData(iSample).B_LRec3(thisComponentlId).*thisComponentP3);%mean B_LRec
+            statisticalParams(iSample).userComponent.sigmav_m(iUserComponent) =sum(rawData(iSample).sigmav3(thisComponentlId).*thisComponentP3);%mean sigmav
+            statisticalParams(iSample).userComponent.conv_m(iUserComponent) =sum(rawData(iSample).conv3(thisComponentlId).*thisComponentP3);%mean conv
+            statisticalParams(iSample).userComponent.rdnsc_m(iUserComponent) =sum(rawData(iSample).rdnsc3(thisComponentlId).*thisComponentP3);%mean rdnsc
+            statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent) =sum(rawData(iSample).sfCorey(thisComponentlId).*thisComponentP3); %mean sfCorey 
         else
             statisticalParams(iSample).userComponent.spht_m(iUserComponent) =nan;
             statisticalParams(iSample).userComponent.symm_m(iUserComponent) =nan;

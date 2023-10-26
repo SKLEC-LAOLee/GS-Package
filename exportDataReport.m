@@ -229,6 +229,7 @@ if userSettings.exportAllData
         fidoutAllData=fopen(outputAllDatafileName,"wt","n","UTF-8");
     end
     fprintf(fidoutAllData,['group,name,id,d05,d10,d16,d25,d50,d75,d84,d90,d95,Dm_um,',...
+        'dm_Folk_um,sigma_Folk,sk_Folk,kg_Folk,',...
         'dm_Mcmanus,sigma_Mcmanus,sk_Mcmanus,kg_Mcmanus,variance,',...
         'clay,silt,sand,gravel,classificationCode,classificationMethod,',...
         'spht_50_2,spht_m_2,b_l_50_2,b_l_m_2,B_LRec_50_2,B_LRec_m_2,symm_50_2,symm_m_2,rdnsc_50_2,rdnsc_m_2,conv_50_2,conv_m_2,sigmav_50_2,sigmav_m_2,',...
@@ -305,7 +306,8 @@ for iSample=1:nSample
         fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d50,statisticalParams(iSample).d75);
         fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d84,statisticalParams(iSample).d90);
         fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d95,statisticalParams(iSample).dm);
-        fprintf(fidoutAllData,',%.3f,%.3f,%.3f,%.3f',statisticalParams(iSample).dm_Mcmanus,statisticalParams(iSample).sigma_Mcmanus,statisticalParams(iSample).sk_Mcmanus,statisticalParams(iSample).kg_Mcmanus);
+        fprintf(fidoutAllData,',%.2f,%.3f,%.3f,%.3f',statisticalParams(iSample).dm_Folk1954,statisticalParams(iSample).sigma_Folk1954,statisticalParams(iSample).sk_Folk1954,statisticalParams(iSample).kg_Folk1954);
+        fprintf(fidoutAllData,',%.4f,%.3f,%.3f,%.3f',statisticalParams(iSample).dm_Mcmanus,statisticalParams(iSample).sigma_Mcmanus,statisticalParams(iSample).sk_Mcmanus,statisticalParams(iSample).kg_Mcmanus);
         fprintf(fidoutAllData,',%.3f',statisticalParams(iSample).variance);
         fprintf(fidoutAllData,',%.2f,%.2f,%.2f,%.2f',statisticalParams(iSample).clay,statisticalParams(iSample).silt,statisticalParams(iSample).sand,statisticalParams(iSample).gravel);
         fprintf(fidoutAllData,',%s,%s',statisticalParams(iSample).classificationCode,statisticalParams(iSample).classificationMethod);

@@ -56,10 +56,15 @@ if exist(userSettings.sampleSettingFileName,"file")==false
     end
     nSample=length(rawData);
     if nSample>0
-        if strcmpi(userSettings.language,'en')
-            fidout=fopen(userSettings.sampleSettingFileName,"wt","n","UTF-8");
-        else
-            fidout=fopen(userSettings.sampleSettingFileName,"wt","n","GB2312");
+        try
+            if strcmpi(userSettings.language,'en')
+                fidout=fopen(userSettings.sampleSettingFileName,"wt","n","UTF-8");
+            else
+                fidout=fopen(userSettings.sampleSettingFileName,"wt","n","GB2312");
+            end
+        catch
+            warndlg(['File write error: ',userSettings.sampleSettingFileName]);
+            return;
         end
     else
         return;

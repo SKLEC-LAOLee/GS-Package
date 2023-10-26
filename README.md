@@ -2,7 +2,9 @@
 A matlab package for processing sediment grain size and shape with support for Camsizer X2, Coulter LS, and Malvern Mastersizer 2000/3000 instruments.
 
 GS-Package was originally developed to fulfill the research needs of SKLEC students in ECNU. It is hoped that GS-Package will help them to make fewer duplicate wheels and can make writing junk papers more enjoyable and convenient.
+
 So, to make the SKLEC kids even cuter, please contact me for any bug fixes, feature upgrades, or questions. 
+
 LAOLee's email: whli@sklec.ecnu.edu.cn
 ## Compatible Instruments
 - Microtrac Cmasizer X2

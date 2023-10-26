@@ -349,13 +349,13 @@ for iSample=1:nSample
             statisticalParams(iSample).conv_50_2=interp1(rawData(iSample).q3Conv+(1:length(rawData(iSample).q3Conv))'.*1e-7,rawData(iSample).channelUpShape,50);
             statisticalParams(iSample).rdnsc_50_2=interp1(rawData(iSample).q3Rdnsc+(1:length(rawData(iSample).q3Rdnsc))'.*1e-7,rawData(iSample).channelUpShape,50);
             
-            statisticalParams(iSample).spht_m_2=sum(rawData(iSample).channelMidShape.*diff(rawData(iSample).q3Spht))./sum(diff(rawData(iSample).q3Spht));
-            statisticalParams(iSample).symm_m_2=sum(rawData(iSample).channelMidShape.*diff(rawData(iSample).q3Symm))./sum(diff(rawData(iSample).q3Symm));
-            statisticalParams(iSample).b_l_m_2=sum(rawData(iSample).channelMidShape.*diff(rawData(iSample).q3_b_l))./sum(diff(rawData(iSample).q3_b_l));
-            statisticalParams(iSample).B_LRec_m_2=sum(rawData(iSample).channelMidShape.*diff(rawData(iSample).q3B_LRec))./sum(diff(rawData(iSample).q3B_LRec));
-            statisticalParams(iSample).sigmav_m_2=sum(rawData(iSample).channelMidShape.*diff(rawData(iSample).q3Sigmav))./sum(diff(rawData(iSample).q3Sigmav));
-            statisticalParams(iSample).conv_m_2=sum(rawData(iSample).channelMidShape.*diff(rawData(iSample).q3Conv))./sum(diff(rawData(iSample).q3Conv));
-            statisticalParams(iSample).rdnsc_m_2=sum(rawData(iSample).channelMidShape.*diff(rawData(iSample).q3Rdnsc))./sum(diff(rawData(iSample).q3Rdnsc));
+            statisticalParams(iSample).spht_m_2=sum(rawData(iSample).channelMidShape(2:end).*diff(rawData(iSample).q3Spht))./sum(diff(rawData(iSample).q3Spht));
+            statisticalParams(iSample).symm_m_2=sum(rawData(iSample).channelMidShape(2:end).*diff(rawData(iSample).q3Symm))./sum(diff(rawData(iSample).q3Symm));
+            statisticalParams(iSample).b_l_m_2=sum(rawData(iSample).channelMidShape(2:end).*diff(rawData(iSample).q3_b_l))./sum(diff(rawData(iSample).q3_b_l));
+            statisticalParams(iSample).B_LRec_m_2=sum(rawData(iSample).channelMidShape(2:end).*diff(rawData(iSample).q3B_LRec))./sum(diff(rawData(iSample).q3B_LRec));
+            statisticalParams(iSample).sigmav_m_2=sum(rawData(iSample).channelMidShape(2:end).*diff(rawData(iSample).q3Sigmav))./sum(diff(rawData(iSample).q3Sigmav));
+            statisticalParams(iSample).conv_m_2=sum(rawData(iSample).channelMidShape(2:end).*diff(rawData(iSample).q3Conv))./sum(diff(rawData(iSample).q3Conv));
+            statisticalParams(iSample).rdnsc_m_2=sum(rawData(iSample).channelMidShape(2:end).*diff(rawData(iSample).q3Rdnsc))./sum(diff(rawData(iSample).q3Rdnsc));
         else
             statisticalParams(iSample).spht_50_2=nan;
             statisticalParams(iSample).symm_50_2=nan;
@@ -427,4 +427,5 @@ for iSample=1:nSample
     end
     %
 end
+[~,~]=mkdir([userSettings.outputPath]); %if not eixst, create it
 save([userSettings.outputPath,'statisticalParams.mat'],'statisticalParams','-mat');

@@ -28,7 +28,7 @@ function sampleSettings=readSampleSettings(userSettings)
 % @others:
 %    format of the user setting file:
 %    1) First row is fixed as the table header with comma seperated columns, allways is:
-%       "dataPath,fileName,name,sampleId,discard,minValidSize,maxValidSize,gourpName,gourpId,exportToAnalySize"
+%       "dataPath,fileName,sampleName,sampleId,discard,minValidSize,maxValidSize,groupName,groupId,exportToAnalySize"
 %    2) Starting on the second row, each row represent one sample record with comma spacing: 
 %       column 01, sample data path
 %       column 02, sample file name
@@ -43,16 +43,16 @@ function sampleSettings=readSampleSettings(userSettings)
 % @references:
 % NONE
 %----------------------------------------------------------------------------------------------------
-if exist(sampleSettingFileName,"file")==false
+if exist(userSettings.sampleSettingFileName,"file")==false
     %fresh data firstly to be processed, prepare an example file.
     sampleSettings=[];
     switch userSettings.instrumentId
         case 1
-            rawData=readCoulterLsData(userSettings);
+            rawData=readCoulterLsData(userSettings,sampleSettings);
         case 11
-            rawData=readCamSizerData(userSettings);
+            rawData=readCamSizerData(userSettings,sampleSettings);
         case 21
-            rawData=readMalvernData(userSettings);
+            rawData=readMalvernData(userSettings,sampleSettings);
     end
     nSample=length(rawData);
     if nSample>0
@@ -64,15 +64,14 @@ if exist(sampleSettingFileName,"file")==false
     else
         return;
     end
-    fprintf(fidout,'dataPath,fileName,name,sampleId,discard,minValidSize,maxValidSize,gourpName,gourpId,exportToAnalySize\n');
+    fprintf(fidout,'dataPath,fileName,name,sampleId,discard,minValidSize,maxValidSize,groupName,groupId,exportToAnalySize\n');
     for iSample=1:nSample
         fprintf(fidout,'%s,%s',rawData(iSample).dataPath,rawData(iSample).fileName);
         fprintf(fidout,',%s,%d,0',rawData(iSample).sampleName,rawData(iSample).sampleId);
-        fprintf(fidout,',%.1f,%.1f',rawData(iSample).validSizeLim(1),rawData(iSample).validSizeLim(1));
-        fprintf(fidout,',%.1f,%.1f',rawData(iSample).validSizeLim(1),rawData(iSample).validSizeLim(1));
-        fprintf(fidout,',%s,%d,1\n',rawData(iSample).gourpName,rawData(iSample).gourpId);
+        fprintf(fidout,',%.2f,%.2f',rawData(iSample).validSizeLim(1),rawData(iSample).validSizeLim(2));
+        fprintf(fidout,',%s,%d,1\n',rawData(iSample).groupName,rawData(iSample).groupId);
     end
     fclose(fidout);
 else
-    sampleSettings=readtable(userSettings.sampleSettingFileName,'ReadVariableNames',true,'Delimiter','\t');
+    sampleSettings=readtable(userSettings.sampleSettingFileName,'ReadVariableNames',true,'Delimiter',',');
 end

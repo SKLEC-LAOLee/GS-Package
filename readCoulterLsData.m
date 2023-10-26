@@ -7,7 +7,7 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %----------------------------------------------------------------------------------------------------
 % userSettings.
 %             dataPath: full path of the data files
-% forceReadRawDataFlag:
+%     forceReadRawData:
 %            = true  allways read data from raw files
 %            = false load the rawData.mat if exists in the dataPath; otherwise, read data from raw files
 %  MIN_CHANNEL_SIZE_UM: lower limit of instrument detection (um), should be greater than 0, default is 0.01um
@@ -31,8 +31,8 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %
 % @return:
 % rawData.
-%           dataPath: full path of the data file
-%           fileName: file name of the xle/xld file
+%           dataPath: full path of the raw-data file
+%           fileName: file name of the raw-data file
 %       instrumentId: instrument code, here is 1
 %                     = 1, coulter LS 13320
 %                     =11, camsizer X2
@@ -116,7 +116,7 @@ if userSettings.dataPath(end)~='\'
 end
 
 hidWait=waitbar(0,'Reading Coulter data, please wait...');
-if exist([userSettings.dataPath,'rawData.mat'],'file')&&(userSettings.forceReadRawDataFlag==false)
+if exist([userSettings.dataPath,'rawData.mat'],'file')&&(userSettings.forceReadRawData==false)
     load([userSettings.dataPath,'rawData.mat'],'-mat','rawData');
     close(hidWait);
     return;
@@ -128,6 +128,7 @@ allFile=char(tempVar.name);
 sampleNum=size(allFile,1);
 validFileNum=0;
 if sampleNum<1
+    close(hidWait);
     return;
 end
 
@@ -147,7 +148,7 @@ for iSample=1:sampleNum
     thisSampleName=thisDataFileName(1:end-3);
     thisDiscardFlag=false;
     thisSampleId=nan;
-    validSizeLim=[-inf,inf];
+    validSizeLim=[0,inf];
     thisGroupName='undefined';
     thisGroupId=-999;
     exportToAnalySize=1;

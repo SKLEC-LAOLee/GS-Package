@@ -1,0 +1,3 @@
+dataPath,fileName,name,sampleId,discard,minValidSize,maxValidSize,groupName,groupId,exportToAnalySize
+.\testData\camSizerX2\,1号_xc_min.xle,1号,-1,0,-Inf,Inf,undefined,-999,1
+.\testData\camSizerX2\,2号_xc_min.xle,2号,-2,0,-Inf,Inf,undefined,-999,1

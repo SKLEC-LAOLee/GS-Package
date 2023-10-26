@@ -1,4 +1,4 @@
-function figureId=plotcomulativeCurve(sampleData,outputConfig)
+function figureId=plotcomulativeCurve(sampleData,userSettings)
 %----------------------------------------------------------------------------------------------------
 % @file name:   plotcomulativeCurve.m
 % @description: Sediment particle size cumulative frequency and differential frequency curves
@@ -7,8 +7,8 @@ function figureId=plotcomulativeCurve(sampleData,outputConfig)
 %----------------------------------------------------------------------------------------------------
 % @param:
 % sampleData.
-%           dataPath: full path of the data file
-%           fileName: file name of the xle/xld file
+%           dataPath: full path of the raw data file
+%           fileName: file name of the raw data file
 %       instrumentId: instrument code
 %                     = 1, coulter LS 13320
 %                     =11, camsizer X2
@@ -41,7 +41,7 @@ function figureId=plotcomulativeCurve(sampleData,outputConfig)
 %                 q3: raw cumulative volume(%)
 %           adjustP3: differential volume percentage after removal of invalid components (%)
 %           adjustQ3: cumulative volume percentage after removal of invalid components (%)
-%  outputConfig.
+%  userSettings.
 %         outputPath: full path of the output files
 % GradationCurveFigWidth: figure width of gradation curve, in unit of cm
 %GradationCurveFigHeight: figure height of gradation curve, in unit of cm
@@ -59,7 +59,7 @@ try
 catch
     figure(figureId);
 end
-set(figureId, 'Units', 'centimeters', 'Position', [5 5 outputConfig.GradationCurveFigWidth outputConfig.GradationCurveFigHeight]);
+set(figureId, 'Units', 'centimeters', 'Position', [5 5 userSettings.GradationCurveFigWidth userSettings.GradationCurveFigHeight]);
 axisId=axes(figureId);
 %differential frequency bar
 yyaxis(axisId,'left');
@@ -72,7 +72,7 @@ ylmDiff(1)=0;
 ytickDiff=(ylmDiff(1):(ylmDiff(2)/10):ylmDiff(2))';
 yticklabelDiff=num2str(ytickDiff,'%0.1f');
 set(axisId,'ycolor','b','ylim',ylmDiff,'ytick',ytickDiff,'yticklabel',yticklabelDiff);
-if strcmpi(language,'cn')
+if strcmpi(userSettings.language,'cn')
     ylabel(axisId,'微分频率(%)');
 else
     ylabel(axisId,'volume percent (%)');
@@ -117,7 +117,7 @@ yticklabelComu=num2str(ytickCumu);
 lineId=plot(axisId,log2(sampleData.channelUpSize./1000),sampleData.adjustQ3,'-r');
 set(lineId,'linewidth',1.5,'color','r');
 set(axisId,'ycolor','r','ylim',ylimCumu,'ytick',ytickCumu,'yticklabel',yticklabelComu,'xtick',sort(log2(xtickVal./1000)),'xlim',sort(log2(xtickVal([1,end])./1000)),'xticklabel',xtickStr);
-if strcmpi(language,'cn')
+if strcmpi(userSettings.language,'cn')
     xlabel('粒径(\mum)');
     ylabel('累积频率(%)');
 else
@@ -131,6 +131,5 @@ else
     annotation(figureId,'textbox',[0.15 0.6 0.3 0.3],'String',{['ID=',sampleData.sampleName],['D10=',num2str(sampleData.d10,'%.0fμm')],['D50=',num2str(sampleData.d50,'%.0fμm')],['D90=',num2str(sampleData.d90,'%.0fμm')]},'FitBoxToText','on','linestyle','none','fontsize',8);
 end
 % save
-print(figureId,'-dpng',[outputConfig.outputPath,'figures\',num2str(sampleData.sampleId),'-',sampleData.sampleName,'.png'], '-loose', '-r600');
-savefig(figureId,[outputConfig.outputPath,'figures\',num2str(sampleData.sampleId),'-',sampleData.sampleName,'.fig']);
-%close(figureId);
+print(figureId,'-dpng',[userSettings.outputPath,'figures\',num2str(sampleData.sampleId),'-',sampleData.sampleName,'.png'], '-loose', '-r600');
+savefig(figureId,[userSettings.outputPath,'figures\',num2str(sampleData.sampleId),'-',sampleData.sampleName,'.fig']);

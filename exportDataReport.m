@@ -1,4 +1,4 @@
-function exportDataReport(statisticalParams,outputConfig)
+function exportDataReport(statisticalParams,userSettings)
 %----------------------------------------------------------------------------------------------------
 % @file name:   exportDataReport.m
 % @description: Output statistical reports and plots
@@ -166,7 +166,7 @@ function exportDataReport(statisticalParams,outputConfig)
 %             .conv_m       : mean value of convexity, calculated using the grainsize indexed particle shape
 %             .rdnsc_m      : mean value of roundness, calculated using the grainsize indexed particle shape
 %             .sfCorey_m    : mean value of Corey shape factor
-%  outputConfig.
+%  userSettings.
 %             outputPath: full path of the output files
 %           prefixString: Prefixes for archive file names
 % GradationCurveFigWidth: figure width of the gradation curve, in unit of cm
@@ -193,14 +193,14 @@ end
 figureId=-1;
 exportTime=datetime("now");
 exportTime.Format="yyyyMMddHHmmss";
-[~,~]=mkdir([outputConfig.outputPath]); %if not eixst, create it
-if outputConfig.exportGradingCurve
-    [~,~]=mkdir([outputConfig.outputPath,'figures']); %if not eixst, create it
+[~,~]=mkdir([userSettings.outputPath]); %if not eixst, create it
+if userSettings.exportGradingCurve
+    [~,~]=mkdir([userSettings.outputPath,'figures']); %if not eixst, create it
 end
 
-if outputConfig.exportMetadata
-    outputMetadatafileName=[outputConfig.outputPath,outputConfig.prefixString,'_Metadata_',char(exportTime),'.csv'];
-    if strcmpi(outputConfig.language,'cn')
+if userSettings.exportMetadata
+    outputMetadatafileName=[userSettings.outputPath,userSettings.prefixString,'_Metadata_',char(exportTime),'.csv'];
+    if strcmpi(userSettings.language,'cn')
         fidoutMetadata=fopen(outputMetadatafileName,"wt","n","GB2312");
         fprintf(fidoutMetadata,'目录,文件名,批次,样品名称,样品序号,仪器类型,上机配置文件,统计标准,上机时间,上机时长(s),循环泵速,比表面积,分散剂折射率,颗粒折射率,颗粒吸收率,遮光度,存在粒形数据,有效下限um,有效上限um\n');
     else
@@ -209,8 +209,8 @@ if outputConfig.exportMetadata
     end
 end
 
-if outputConfig.exportGBT12763
-    outputGBfileName=[outputConfig.outputPath,outputConfig.prefixString,'_GBT12763_',char(exportTime),'.csv']; %GBT12763
+if userSettings.exportGBT12763
+    outputGBfileName=[userSettings.outputPath,userSettings.prefixString,'_GBT12763_',char(exportTime),'.csv']; %GBT12763
     fidoutGB=fopen(outputGBfileName,"wt","n","GB2312");
     fprintf(fidoutGB,'批次,样品名称,样品序号,D50(um),Dm(um),D5(um),D95(um),中值球形度,平均球形度,中值宽长比,平均宽长比,分选系数,分选性,偏态,峰态,粘土(%%),粉砂(%%),砂(%%),砾石(%%),命名');
     channelUp=statisticalParams(1).upSize_GBT12763;
@@ -221,34 +221,32 @@ if outputConfig.exportGBT12763
     fprintf(fidoutGB,'\n');
 end
 
-if outputConfig.exportAllData
-    outputAllDatafileName=[outputConfig.outputPath,outputConfig.prefixString,'_AllData_',char(exportTime),'.csv'];
-    if strcmpi(outputConfig.language,'cn')
+if userSettings.exportAllData
+    outputAllDatafileName=[userSettings.outputPath,userSettings.prefixString,'_AllData_',char(exportTime),'.csv'];
+    if strcmpi(userSettings.language,'cn')
         fidoutAllData=fopen(outputAllDatafileName,"wt","n","GB2312");
     else
         fidoutAllData=fopen(outputAllDatafileName,"wt","n","UTF-8");
     end
-    fprintf(fidoutAllData,'group,name,id,d05,d10,d16,d25,d50,d75,d84,d90,d95,Dm_um,'...
-        'dm_phi,sigma_Mcmanus,sk_Mcmanus,kg_Mcmanus,variance,'...
-        'clay,silt,sand,gravel,classificationCode,classificationMethod,'...
-        'spht_50_2,spht_m_2,b_l_50_2,b_l_m_2,B_LRec_50_2,B_LRec_m_2,symm_50_2,symm_m_2,rdnsc_50_2,rdnsc_m_2,conv_50_2,conv_m_2,sigmav_50_2,sigmav_m_2,'...
-        'spht_50,spht_m,b_l_50,b_l_m,B_LRec_50,B_LRec_m,symm_50,symm_m,rdnsc_50,rdnsc_m,conv_50,conv_m,sigmav_50,sigmav_m,sfCorey_50,sfCorey_m\n');
+    fprintf(fidoutAllData,['group,name,id,d05,d10,d16,d25,d50,d75,d84,d90,d95,Dm_um,',...
+        'dm_phi,sigma_Mcmanus,sk_Mcmanus,kg_Mcmanus,variance,',...
+        'clay,silt,sand,gravel,classificationCode,classificationMethod,',...
+        'spht_50_2,spht_m_2,b_l_50_2,b_l_m_2,B_LRec_50_2,B_LRec_m_2,symm_50_2,symm_m_2,rdnsc_50_2,rdnsc_m_2,conv_50_2,conv_m_2,sigmav_50_2,sigmav_m_2,',...
+        'spht_50,spht_m,b_l_50,b_l_m,B_LRec_50,B_LRec_m,symm_50,symm_m,rdnsc_50,rdnsc_m,conv_50,conv_m,sigmav_50,sigmav_m,sfCorey_50,sfCorey_m\n']);
 end
 
-if outputConfig.exportUserComponent
-    outputUserComponentfileName=[outputConfig.outputPath,outputConfig.prefixString,'_UserComponent_',char(exportTime),'.csv'];
-    if strcmpi(outputConfig.language,'cn')
+if userSettings.exportUserComponent
+    outputUserComponentfileName=[userSettings.outputPath,userSettings.prefixString,'_UserComponent_',char(exportTime),'.csv'];
+    if strcmpi(userSettings.language,'cn')
         fidoutUserComponent=fopen(outputUserComponentfileName,"wt","n","GB2312");
     else
         fidoutUserComponent=fopen(outputUserComponentfileName,"wt","n","UTF-8");
     end
-    fprintf(fidoutUserComponent,'group,name,id,lowerSize,upperSize,volumePercentage,Dm_um,'...
-        'dm_phi,sigma_Mcmanus,sk_Mcmanus,kg_Mcmanus,'...
-        'spht_m,b_l_m,B_LRec_m,symm_m,rdnsc_m,conv_m,sigmav_m,sfCorey_m\n');
+    fprintf(fidoutUserComponent,'group,name,id,lowerSize,upperSize,volumePercentage,Dm_um,dm_phi,sigma_Mcmanus,sk_Mcmanus,kg_Mcmanus,spht_m,b_l_m,B_LRec_m,symm_m,rdnsc_m,conv_m,sigmav_m,sfCorey_m\n');
 end
 
 for iSample=1:nSample
-    if outputConfig.exportMetadata
+    if userSettings.exportMetadata
         fprintf(fidoutMetadata,'''%s,''%s',statisticalParams(iSample).dataPath,statisticalParams(iSample).fileName);
         fprintf(fidoutMetadata,',''%s,''%s,%d',statisticalParams(iSample).groupName,statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
         fprintf(fidoutMetadata,',%d',statisticalParams(iSample).instrumentId);
@@ -266,7 +264,7 @@ for iSample=1:nSample
         fprintf(fidoutMetadata,'\n');
     end
 
-    if outputConfig.exportGBT12763
+    if userSettings.exportGBT12763
         fprintf(fidoutGB,'''%s',statisticalParams(iSample).groupName);
         fprintf(fidoutGB,',''%s,%d',statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
         fprintf(fidoutGB,',%.1f,%.1f',statisticalParams(iSample).d50,statisticalParams(iSample).dm_Folk1954); %um
@@ -278,16 +276,18 @@ for iSample=1:nSample
             fprintf(fidoutGB,',,,,');
         end
         switch statisticalParams(iSample).sortingLevel
-            case (statisticalParams(iSample).sigma_Folk1954<0.35)
+            case 1
                 sortingDescription='极好';
-            case (statisticalParams(iSample).sigma_Folk1954>=0.35)&&(statisticalParams(iSample).sigma_Folk1954<0.71)
+            case 2
                 sortingDescription='好';
-            case (statisticalParams(iSample).sigma_Folk1954>=0.71)&&(statisticalParams(iSample).sigma_Folk1954<1.00)
+            case 3
                 sortingDescription='中等';
-            case (statisticalParams(iSample).sigma_Folk1954>=1.00)&&(statisticalParams(iSample).sigma_Folk1954<4.00)
+            case 4
                 sortingDescription='差';
-            case (statisticalParams(iSample).sigma_Folk1954>=4.00)
+            case 5
                 sortingDescription='极差';
+            otherwise
+                sortingDescription='NaN';
         end
         fprintf(fidoutGB,',%.3f,%s,%.3f,%.3f',statisticalParams(iSample).sigma_Folk1954,sortingDescription,statisticalParams(iSample).sk_Folk1954,statisticalParams(iSample).kg_Folk1954);
         fprintf(fidoutGB,',%.1f,%.1f,%.1f,%.1f',statisticalParams(iSample).clay,statisticalParams(iSample).silt,statisticalParams(iSample).sand,statisticalParams(iSample).gravel);
@@ -297,18 +297,17 @@ for iSample=1:nSample
         end
         fprintf(fidoutGB,'\n');
     end
-
-    if outputConfig.exportAllData
+    if userSettings.exportAllData
         fprintf(fidoutAllData,'''%s',statisticalParams(iSample).groupName);
         fprintf(fidoutAllData,',''%s,%d',statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
         fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d05,statisticalParams(iSample).d10);
         fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d16,statisticalParams(iSample).d25);
         fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d50,statisticalParams(iSample).d75);
         fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d84,statisticalParams(iSample).d90);
-        fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d95,statisticalParams(iSample).Dm_um);
+        fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).d95,statisticalParams(iSample).dm);
         fprintf(fidoutAllData,',%.3f,%.3f,%.3f,%.3f',statisticalParams(iSample).dm_Mcmanus,statisticalParams(iSample).sigma_Mcmanus,statisticalParams(iSample).sk_Mcmanus,statisticalParams(iSample).kg_Mcmanus);
         fprintf(fidoutAllData,',%.3f',statisticalParams(iSample).variance);
-        fprintf(fidoutAllData,',%.1f,%.1f,%.1f,%.1f',statisticalParams(iSample).clay,statisticalParams(iSample).silt,statisticalParams(iSample).sand,statisticalParams(iSample).gravel);
+        fprintf(fidoutAllData,',%.2f,%.2f,%.2f,%.2f',statisticalParams(iSample).clay,statisticalParams(iSample).silt,statisticalParams(iSample).sand,statisticalParams(iSample).gravel);
         fprintf(fidoutAllData,',%s,%s',statisticalParams(iSample).classificationCode,statisticalParams(iSample).classificationMethod);
         if statisticalParams(iSample).haveShapeData
             fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).spht_50_2,statisticalParams(iSample).spht_m_2);
@@ -325,6 +324,7 @@ for iSample=1:nSample
             fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).rdnsc_50,statisticalParams(iSample).rdnsc_m);
             fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).conv_50,statisticalParams(iSample).conv_m);
             fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).sigmav_50,statisticalParams(iSample).sigmav_m);
+            fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).sfCorey_50,statisticalParams(iSample).sfCorey_m);
         else
             fprintf(fidoutAllData,',,,,,,,,,,,,,,,,,,,,,,,,,,,,,');
         
@@ -332,7 +332,7 @@ for iSample=1:nSample
         fprintf(fidoutAllData,'\n');
     end
 
-    if outputConfig.exportUserComponent
+    if userSettings.exportUserComponent
         nUserComponent=length(statisticalParams(iSample).userComponent.upSize);
         for iUserComponent=1:nUserComponent
             fprintf(fidoutUserComponent,'''%s',statisticalParams(iSample).groupName);
@@ -356,29 +356,30 @@ for iSample=1:nSample
                 statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent));
         end
     end
-    if outputConfig.exportGradingCurve
-        figureId=plotcomulativeCurve(statisticalParams(iSample),outputConfig);
+    if userSettings.exportGradingCurve
+        figureId=plotcomulativeCurve(statisticalParams(iSample),userSettings);
     end
 end
 
-if outputConfig.exportGBT12763
+if userSettings.exportGBT12763
     fclose(fidoutGB);
 end
 
-if outputConfig.exportMetadata
+if userSettings.exportMetadata
     fclose(fidoutMetadata);
 end
 
-if outputConfig.exportUserComponent
+if userSettings.exportUserComponent
     fclose(fidoutUserComponent);
 end
 
-if outputConfig.exportAllData
+if userSettings.exportAllData
     fclose(fidoutAllData);
 end
 
-if outputConfig.exportGradingCurve
-    if figureId>0
+if userSettings.exportGradingCurve
+    try
         close(figureId);
+    catch
     end
 end

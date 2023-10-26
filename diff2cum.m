@@ -46,4 +46,8 @@ meanVal=sum(indexVar.*diffPercentage)./sum(diffPercentage);
 % make the variable monotonically increasing
 uniqueCumuPercent=cumuPercent(:)+(1:nChannel)'.*1e-7;
 medianVal=interp1(uniqueCumuPercent,channelUpperSize,50);
-passingVal=interp1(uniqueCumuPercent,channelUpperSize,userPercentLevel);
+if nargin==4
+    passingVal=interp1(uniqueCumuPercent,channelUpperSize,userPercentLevel);
+else
+    passingVal=[];
+end

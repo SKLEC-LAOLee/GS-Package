@@ -1,4 +1,4 @@
-function exportForAnalySize(statisticalParams,outputConfig)
+function exportForAnalySize(statisticalParams,userSettings)
 %----------------------------------------------------------------------------------------------------
 % @file name:   exportForAnalySize.m
 % @description: Outputs data reports that can be imported into AnalySize software for end element analysis.
@@ -54,7 +54,7 @@ function exportForAnalySize(statisticalParams,outputConfig)
 %              conv3: Convexity = sqrt(real area / convex particle area)
 %             rdnsc3: Roundness, ratio of the averaged radius of curvature of all convex regions to the circumscribed cricle of the particle
 %                pdv: volume-based number of particle detections
-%  outputConfig.
+%  userSettings.
 %         outputPath: full path of the output files
 %       prefixString: Prefixes for archive file names
 %           language: 
@@ -67,14 +67,14 @@ function exportForAnalySize(statisticalParams,outputConfig)
 %----------------------------------------------------------------------------------------------------
 nSample=length(statisticalParams);
 
-if outputConfig.userChannelSize(1)<1e-3
-    outputConfig.userChannelSize(1)=1e-3;
+if userSettings.userChannelSize(1)<1e-3
+    userSettings.userChannelSize(1)=1e-3;
 end
-midSize_phi=(-log2(outputConfig.userChannelSize(1:end-1)./1000)-log2(outputConfig.userChannelSize(2:end)./1000))./2;
+midSize_phi=(-log2(userSettings.userChannelSize(1:end-1)./1000)-log2(userSettings.userChannelSize(2:end)./1000))./2;
 midSize_um=(2.^(-midSize_phi)).*1000;
 nChannel=length(midSize_um);
-outputfileName=[outputConfig.outputPath,outputConfig.prefixString,'_For_Analysize','.dat'];
-if strcmpi(outputConfig.language,'cn')
+outputfileName=[userSettings.outputPath,userSettings.prefixString,'_For_Analysize','.dat'];
+if strcmpi(userSettings.language,'cn')
     fidout=fopen(outputfileName,"wt","n","GB2312");
 else
     fidout=fopen(outputfileName,"wt","n","UTF-8");
@@ -88,7 +88,7 @@ fprintf(fidout,'\n');
 %
 for iSample=1:nSample
     if statisticalParams(iSample).exportToAnalySize>0
-        newQ3=interp1(statisticalParams(iSample).channelUpSize,statisticalParams(iSample).adjustQ3,userChannelSize);
+        newQ3=interp1(statisticalParams(iSample).channelUpSize,statisticalParams(iSample).adjustQ3,userSettings.userChannelSize);
         newP3=diff(newQ3);
         fprintf(fidout,'%s(%d)',statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
         for iChannel=1:nChannel

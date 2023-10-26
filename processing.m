@@ -6,14 +6,19 @@ function processing(userSettings)
 % @version:     Ver1.1, 2023.10.22
 %----------------------------------------------------------------------------------------------------
 sampleSettings=readSampleSettings(userSettings);
-switch userSettings.instrumentId
-    case 1
-        rawData=readCoulterLsData(userSettings,sampleSettings);
-    case 11
-        rawData=readCamSizerData(userSettings,sampleSettings);
-    case 21
-        rawData=readMalvernData(userSettings,sampleSettings);
+userSettings.instrumentId=1;
+rawData=readCoulterLsData(userSettings,sampleSettings);
+
+if isempty(rawData)
+    userSettings.instrumentId=11;
+    rawData=readCamSizerData(userSettings,sampleSettings);
 end
+
+if isempty(rawData)
+    userSettings.instrumentId=21;
+    rawData=readMalvernData(userSettings,sampleSettings);
+end
+
 if (isempty(sampleSettings))&&(~isempty(rawData))
     warndlg("Warning: This is the first time the raw data has been processed and the sample setting information file has not been edited.");
 end

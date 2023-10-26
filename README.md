@@ -14,7 +14,11 @@ A matlab package for processing sediment grain size and shape with support for C
 - output statistical parameters of the user-speicified components
 - output particle grading curve figures in editable format
 - output diagnostic triangular phase map following Folk(1954) and Blair-McPherson(1999) methods in editable format
-## Statistical parameters of laboratory operation, particle size and shape 
+## Statistical parameters of laboratory operation, particle size and shape
+- ``instrumentId``: 
+    - = ``1``, coulter LS Serials
+    - =``11``, camsizer X2
+    - =``21``, malvern MasterSizer Serials
 - ``analysisTime``: Time to start on-board measurements(datetime)
 - ``analysisPeriod``: measurement period(s)
 - ``obscuration``: obscuration(%), only for laser diffraction method
@@ -102,13 +106,13 @@ A matlab package for processing sediment grain size and shape with support for C
   - `.sigma_Mcmanus`: sorting (Mcmanus method)
   - `.sk_Mcmanus`: skewness (Mcmanus method)
   - `.kg_Mcmanus`: Kurtosis (Mcmanus method)
-  - `.spht_m`: mean value of sphericity, calculated using the grainsize indexed particle shape
-  - `.symm_m`: mean value of symmetry, calculated using the grainsize indexed particle shape
-  - `.b_l_m`: mean value of aspect ratio, calculated using the grainsize indexed particle shape
-  - `.B_LRec_m`: mean value of minimum aspect ratio, calculated using the grainsize indexed particle shape
-  - `.sigmav_m`: mean value of sigmav?, calculated using the grainsize indexed particle shape
-  - `.conv_m`: mean value of convexity, calculated using the grainsize indexed particle shape
-  - `.rdnsc_m`: mean value of roundness, calculated using the grainsize indexed particle shape
+  - `.spht_m`: mean value of sphericity
+  - `.symm_m`: mean value of symmetry
+  - `.b_l_m`: mean value of aspect ratio
+  - `.B_LRec_m`: mean value of minimum aspect ratio
+  - `.sigmav_m`: mean value of sigmav?
+  - `.conv_m`: mean value of convexity
+  - `.rdnsc_m`: mean value of roundness
   - `.sfCorey_m`: mean value of Corey shape factor
 ## How to use GS-Package
 - see demo.m
@@ -119,10 +123,6 @@ A matlab package for processing sediment grain size and shape with support for C
   - ``dataPath``: full path of the raw data files
   - ``outputPath``: full path of the output files
   - ``prefixString``: prefixes for archive file names
-  - ``instrumentId``: 
-      - = ``1``, coulter LS Serials; 
-      - =``11``, camsizer X2; 
-      - =``21``, malvern MasterSizer Serials
   - ``forceReadRawData``:
     - = ``true``, allways read data from raw files;
     - = ``false``, load the rawData.mat if exists in the dataPath; otherwise, read data from raw files

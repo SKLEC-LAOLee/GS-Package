@@ -179,6 +179,7 @@ function exportDataReport(statisticalParams,userSettings)
 %         exportMetadata: output metadata report
 %          exportAllData: output all the statistical parameters
 %    exportUserComponent: output statistical parameters of the user-speicified components
+% exportClassificationScheme: diagnostic triangular phase mapping of sediments
 % @return: 
 % NONE
 % @references:

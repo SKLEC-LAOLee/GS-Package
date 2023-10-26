@@ -21,7 +21,9 @@ if ~isempty(rawData)
     statisticalParams=calcStatisticalParams(rawData,userSettings);
     exportDataReport(statisticalParams,userSettings);
     exportForAnalySize(statisticalParams,userSettings);
-    plotClassificationScheme(statisticalParams,userSettings);
+    if userSettings.exportClassificationScheme
+        plotClassificationScheme(statisticalParams,userSettings);
+    end
 else
     warndlg("No valid Coulter-data file in the specified path.");
 end

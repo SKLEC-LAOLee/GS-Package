@@ -21,6 +21,7 @@ userSettings.exportGradingCurve=true;                               %output part
 userSettings.exportMetadata=true;                                   %output metadata report
 userSettings.exportAllData=true;                                    %output all the statistical parameters
 userSettings.exportUserComponent=true;                              %output statistical parameters of the user-speicified components
+userSettings.exportClassificationScheme=true;                       %output diagnostic triangular phase map
 componentRank=[0.01,3.9,32,62.5,125,250,500,1000,2000,4000,8000]';  %size of the user-defined components,in unit of um
 userSettings.componentDownSize=componentRank(1:end-1,1);            %upper size of the user components (um)
 userSettings.componentUpSize=componentRank(2:end,1);                %lower size of the user components (um)

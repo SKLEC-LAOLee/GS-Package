@@ -7,8 +7,8 @@ function exportDataReport(statisticalParams,outputConfig)
 %----------------------------------------------------------------------------------------------------
 % @param:
 % statisticalParams.
-%           dataPath: full path of the data file
-%           fileName: file name of the xle/xld file
+%           dataPath: full path of the raw data file
+%           fileName: file name of the raw data file
 %       instrumentId: instrument code
 %                     = 1, coulter LS 13320
 %                     =11, camsizer X2
@@ -54,7 +54,7 @@ function exportDataReport(statisticalParams,outputConfig)
 %              conv3: Convexity = sqrt(real area / convex particle area)
 %             rdnsc3: Roundness, ratio of the averaged radius of curvature of all convex regions to the circumscribed cricle of the particle
 %                pdv: volume-based number of particle detections
-%    channelMeanSize: mean value of the particle size
+%    channelMeanSize: mean value of the particle size, um, only valid in CamsizerX2 data
 %channelSize_xFe_avg: average feret diameter
 %channelSize_xMa_avg: average martin diameter
 % channelSize_xc_avg: average chord diameter
@@ -96,17 +96,17 @@ function exportDataReport(statisticalParams,outputConfig)
 %      sigma_Mcmanus: sorting, Mcmanus
 %         sk_Mcmanus: skewness, Mcmanus
 %         kg_Mcmanus: Kurtosis, Mcmanus
-%        dm_GBT12763: mean size(phi), GBT12763
-%     sigma_GBT12763: sorting, GBT12763
-%        sk_GBT12763: skewness, GBT12763
-%        kg_GBT12763: Kurtosis, GBT12763
+%        dm_Folk1954: mean size(um), GBT12763
+%     sigma_Folk1954: sorting, GBT12763
+%        sk_Folk1954: skewness, GBT12763
+%        kg_Folk1954: Kurtosis, GBT12763
 %       sortingLevel: sorting level(GBT 12763.8-2007)
-%                     very good(1),             sigma_GBT12763 < 0.35 phi
-%                          good(2), 0.35 phi <= sigma_GBT12763 < 0.71 phi
-%                        middle(3), 0.71 phi <= sigma_GBT12763 < 1.00 phi
-%                           bad(4), 1.00 phi <= sigma_GBT12763 < 4.00 phi
-%                      very bad(5), 4.00 phi <= sigma_GBT12763
-%           variance: variance =sqrt(D84_um/D16_um)
+%                     very good(1),             sigma_Folk1954 < 0.35 phi
+%                          good(2), 0.35 phi <= sigma_Folk1954 < 0.71 phi
+%                        middle(3), 0.71 phi <= sigma_Folk1954 < 1.00 phi
+%                           bad(4), 1.00 phi <= sigma_Folk1954 < 4.00 phi
+%                      very bad(5), 4.00 phi <= sigma_Folk1954
+%           variance: variance =sqrt(D84_phi/D16_phi)
 %             gravel: (2mm, inf](%)
 %               sand: (63um,2mm](%)
 %               silt: (3.9um,63um](%)
@@ -152,7 +152,7 @@ function exportDataReport(statisticalParams,outputConfig)
 %      userComponent: parameters of the user-specified components
 %             .upSize       : upper size of the user-specified components
 %             .downSize     : lower size of the user-specified components
-%             .density      : percentage of all
+%             .fraction     : percentage of all
 %             .dm           : mean size in unit of um
 %             .dm_Mcmanus   : mean size in unit of phi(Mcmanus method)
 %             .sigma_Mcmanus: sorting (Mcmanus method)
@@ -167,18 +167,18 @@ function exportDataReport(statisticalParams,outputConfig)
 %             .rdnsc_m      : mean value of roundness, calculated using the grainsize indexed particle shape
 %             .sfCorey_m    : mean value of Corey shape factor
 %  outputConfig.
-%         outputPath: full path of the output files
-%       prefixString: Prefixes for archive file names
-% GradationCurveFigWidth: figure width of gradation curve, in unit of cm
-%GradationCurveFigHeight: figure height of gradation curve, in unit of cm
-%           language: 
+%             outputPath: full path of the output files
+%           prefixString: Prefixes for archive file names
+% GradationCurveFigWidth: figure width of the gradation curve, in unit of cm
+%GradationCurveFigHeight: figure height of the gradation curve, in unit of cm
+%               language: 
 %               ='cn'   Particle grading curves are labeled in Chinese
 %               ='en'   Particle grading curves are labeled in English
-%     exportGBT12763: output GBT12763-format report
-% exportGradingCurve: output particle grading curve figures
-%     exportMetadata: output metadata report
-%      exportAllData: output all the statistical parameters
-%exportUserComponent: output statistical parameters of the user-speicified components
+%         exportGBT12763: output GBT12763-format report
+%     exportGradingCurve: output particle grading curve figures
+%         exportMetadata: output metadata report
+%          exportAllData: output all the statistical parameters
+%    exportUserComponent: output statistical parameters of the user-speicified components
 % @return: 
 % NONE
 % @references:
@@ -212,7 +212,7 @@ end
 if outputConfig.exportGBT12763
     outputGBfileName=[outputConfig.outputPath,outputConfig.prefixString,'_GBT12763_',char(exportTime),'.csv']; %GBT12763
     fidoutGB=fopen(outputGBfileName,"wt","n","GB2312");
-    fprintf(fidoutGB,'批次,样品名称,样品序号,D50(um),Dm(um),D5(um),D95(um),中值球形度,平均球形度,中值宽长比,平均宽长比,分选系数,偏态,峰态,粘土(%%),粉砂(%%),砂(%%),砾石(%%),命名');
+    fprintf(fidoutGB,'批次,样品名称,样品序号,D50(um),Dm(um),D5(um),D95(um),中值球形度,平均球形度,中值宽长比,平均宽长比,分选系数,分选性,偏态,峰态,粘土(%%),粉砂(%%),砂(%%),砾石(%%),命名');
     channelUp=statisticalParams(1).upSize_GBT12763;
     nChannel=length(channelUp);
     for iChannel=1:nChannel
@@ -269,15 +269,27 @@ for iSample=1:nSample
     if outputConfig.exportGBT12763
         fprintf(fidoutGB,'''%s',statisticalParams(iSample).groupName);
         fprintf(fidoutGB,',''%s,%d',statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
-        fprintf(fidoutGB,',%.3f,%.3f',statisticalParams(iSample).d50,statisticalParams(iSample).dm);
-        fprintf(fidoutGB,',%.3f,%.3f',statisticalParams(iSample).d05,statisticalParams(iSample).d95);
+        fprintf(fidoutGB,',%.1f,%.1f',statisticalParams(iSample).d50,statisticalParams(iSample).dm_Folk1954); %um
+        fprintf(fidoutGB,',%.1f,%.1f',statisticalParams(iSample).d05,statisticalParams(iSample).d95); %um
         if statisticalParams(iSample).haveShapeData
             fprintf(fidoutGB,',%.3f,%.3f',statisticalParams(iSample).spht_50,statisticalParams(iSample).spht_m);
             fprintf(fidoutGB,',%.3f,%.3f',statisticalParams(iSample).b_l_50,statisticalParams(iSample).b_l_m);
         else
             fprintf(fidoutGB,',,,,');
         end
-        fprintf(fidoutGB,',%.3f,%.3f,%.3f',statisticalParams(iSample).sigma_GBT12763,statisticalParams(iSample).sk_GBT12763,statisticalParams(iSample).kg_GBT12763);
+        switch statisticalParams(iSample).sortingLevel
+            case (statisticalParams(iSample).sigma_Folk1954<0.35)
+                sortingDescription='极好';
+            case (statisticalParams(iSample).sigma_Folk1954>=0.35)&&(statisticalParams(iSample).sigma_Folk1954<0.71)
+                sortingDescription='好';
+            case (statisticalParams(iSample).sigma_Folk1954>=0.71)&&(statisticalParams(iSample).sigma_Folk1954<1.00)
+                sortingDescription='中等';
+            case (statisticalParams(iSample).sigma_Folk1954>=1.00)&&(statisticalParams(iSample).sigma_Folk1954<4.00)
+                sortingDescription='差';
+            case (statisticalParams(iSample).sigma_Folk1954>=4.00)
+                sortingDescription='极差';
+        end
+        fprintf(fidoutGB,',%.3f,%s,%.3f,%.3f',statisticalParams(iSample).sigma_Folk1954,sortingDescription,statisticalParams(iSample).sk_Folk1954,statisticalParams(iSample).kg_Folk1954);
         fprintf(fidoutGB,',%.1f,%.1f,%.1f,%.1f',statisticalParams(iSample).clay,statisticalParams(iSample).silt,statisticalParams(iSample).sand,statisticalParams(iSample).gravel);
         fprintf(fidoutGB,',%s',statisticalParams(iSample).classificationCode);
         for iChannel=1:nChannel
@@ -328,7 +340,7 @@ for iSample=1:nSample
             fprintf(fidoutUserComponent,',%.1f,%.1f,%.2f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n',...
                 statisticalParams(iSample).userComponent.downSize(iUserComponent),...
                 statisticalParams(iSample).userComponent.upSize(iUserComponent),...
-                statisticalParams(iSample).userComponent.density(iUserComponent),...
+                statisticalParams(iSample).userComponent.fraction(iUserComponent),...
                 statisticalParams(iSample).userComponent.dm(iUserComponent),...
                 statisticalParams(iSample).userComponent.dm_Mcmanus(iUserComponent),...
                 statisticalParams(iSample).userComponent.sigma_Mcmanus(iUserComponent),...

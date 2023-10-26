@@ -114,8 +114,14 @@ A matlab package for processing sediment grain size and shape with support for C
   - `.conv_m`: mean value of convexity
   - `.rdnsc_m`: mean value of roundness
   - `.sfCorey_m`: mean value of Corey shape factor
+## References
+- Bagheri, G. H., C. Bonadonna, I. Manzella, and P. Vonlanthen. “On the Characterization of Size and Shape of Irregular Particles.” Powder Technology 270 (January 1, 2015): 141–53. https://doi.org/10.1016/j.powtec.2014.10.015.
+- Folk, R.L. and Ward, W.C. (1957) A Study in the Significance of Grain-Size Parameters. Journal of Sedimentary Petrology, 27, 3-26.https://doi.org/10.1306/74D70646-2B21-11D7-8648000102C1865D
+- Li, Linzhu, and Magued Iskander. “Comparison of 2D and 3D Dynamic Image Analysis for Characterization of Natural Sands.” Engineering Geology 290 (September 5, 2021): 106052. https://doi.org/10.1016/j.enggeo.2021.106052.
+- State market regulatory administration of P.R.C. "Specifications for oceanographic survey - Part 8: marine geology and geophysics survey (海洋调查规范 第8部分: 海洋地质地球物理调查.)" GB/T 12763.8-2007(2007).
+- Terence C. Blair, John G. McPherson; Grain-size and textural classification of coarse sedimentary particles. Journal of Sedimentary Research 1999;; 69 (1): 6–19. https://doi.org/10.2110/jsr.69.6
 ## How to use GS-Package
-- see demo.m
+- see `demo.m`
   all the settings are integrated in a structure variable "userSettings". 
 - Definitions of "userSettings"
 ``userSettings.``

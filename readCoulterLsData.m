@@ -134,16 +134,16 @@ end
 
 backslashId=strfind(userSettings.dataPath,'\');
 if length(backslashId)<=1
-    lastLevelDataPath=dataPath;  % root dir, for example: "c:\"
+    lastLevelDataPath=userSettings.dataPath;  % root dir, for example: "c:\"
 else
-    lastLevelDataPath=dataPath(backslashId(end-1)+1:backslashId(end)-1);
+    lastLevelDataPath=userSettings.dataPath(backslashId(end-1)+1:backslashId(end)-1);
 end
 %
 for iSample=1:sampleNum
     %readdata
     thisDataFileName=allFile(iSample,:);
 
-    fidIn=fopen(strcat(dataPath,thisDataFileName),'r');
+    fidIn=fopen(strcat(userSettings.dataPath,thisDataFileName),'r');
 
     thisSampleName=thisDataFileName(1:end-3);
     thisDiscardFlag=false;
@@ -206,7 +206,7 @@ for iSample=1:sampleNum
             rawData(validFileNum).sampleId=thisSampleId;
             rawData(validFileNum).groupName=thisGroupName;
             rawData(validFileNum).groupId=thisGroupId;
-            rawData(validFileNum).dataPath=dataPath;
+            rawData(validFileNum).dataPath=userSettings.dataPath;
             rawData(validFileNum).fileName=thisDataFileName;
             rawData(validFileNum).exportToAnalySize=exportToAnalySize;
             rawData(validFileNum).configInfo='';

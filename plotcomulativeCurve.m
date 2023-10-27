@@ -80,9 +80,9 @@ end
 
 %cumulative frequency curve
 yyaxis(axisId,'right');
-pai=13:-1:-3;
-paiChannelUp=1000*2.^(-pai);
-paiStr={'0.1','0.2','0.5','1.0','2.0','3.9','7.8','15.6','31.3','62.5','125','250','500','1000','2000','4000','8000'};
+phi=14:-1:-3;
+phiChannelUp=1000*2.^(-phi);
+phiStr={'0.06','0.1','0.2','0.5','1.0','2.0','3.9','7.8','15.6','31.3','62.5','125','250','500','1000','2000','4000','8000'};
 
 minId=find(abs(sampleData.adjustQ3)<0.01);
 maxId=find(abs(sampleData.adjustQ3)>99.9999999);
@@ -97,20 +97,20 @@ else
     maxId=maxId(1);
 end
 
-xlimMinId=find(paiChannelUp<=sampleData.channelUpSize(minId));
-xlimMaxId=find(paiChannelUp>=sampleData.channelUpSize(maxId));
+xlimMinId=find(phiChannelUp<=sampleData.channelMidSize(minId));
+xlimMaxId=find(phiChannelUp>=sampleData.channelUpSize(maxId));
 if isempty(xlimMinId)
     xlimMinId=1;
 else
     xlimMinId=xlimMinId(end);
 end
 if isempty(xlimMaxId)
-    xlimMaxId=length(paiChannelUp);
+    xlimMaxId=length(phiChannelUp);
 else
     xlimMaxId=xlimMaxId(1);
 end
-xtickVal=paiChannelUp(xlimMinId:xlimMaxId);
-xtickStr=paiStr(xlimMinId:xlimMaxId);
+xtickVal=phiChannelUp(xlimMinId:xlimMaxId);
+xtickStr=phiStr(xlimMinId:xlimMaxId);
 ylimCumu=[0 100];
 ytickCumu=(0:10:100)';
 yticklabelComu=num2str(ytickCumu);

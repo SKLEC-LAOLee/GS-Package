@@ -1,6 +1,6 @@
-function processing(userSettings)
+function gs_package_processing_flow(userSettings)
 %----------------------------------------------------------------------------------------------------
-% @file name:   processing.m
+% @file name:   gs_package_processing_flow.m
 % @description: Main processing flow of GS-Package
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
 % @version:     Ver1.1, 2023.10.22

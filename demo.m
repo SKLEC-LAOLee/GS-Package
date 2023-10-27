@@ -25,4 +25,4 @@ componentRank=[0.01,3.9,32,62.5,125,250,500,1000,2000,4000,8000]';  %size of the
 userSettings.componentDownSize=componentRank(1:end-1,1);            %upper size of the user components (um)
 userSettings.componentUpSize=componentRank(2:end,1);                %lower size of the user components (um)
 %-------------------------------------------------------------------
-processing(userSettings);
+gs_package_processing_flow(userSettings);

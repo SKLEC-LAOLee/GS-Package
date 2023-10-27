@@ -13,13 +13,14 @@ LAOLee's email: whli@sklec.ecnu.edu.cn
 - Malvern MasterSizer 2000
 - Malvern MasterSizer 3000
 ## Currently implemented functions
-- Characterization of particle size and shape
-- Outputs data reports that can be imported into AnalySize software for end element analysis
-- Output reports in accordance with GB/T12763.8
 - output metadata report
+- Characterization of particle size and shape
 - output statistical parameters of the user-speicified components
 - output particle grading curve figures in editable format
-- output diagnostic triangular phase map following Folk(1954) and Blair-McPherson(1999) methods in editable format
+- output diagnostic triangular phase map following Folk(1954) and Blair-McPherson(1999) 
+- Outputs data reports that can be imported into AnalySize software for end element analysis
+methods in editable format
+- Output reports in accordance with GB/T12763.8
 ## Statistical parameters of laboratory operation, particle size and shape
 - ``instrumentId``: 
     - = ``1``, coulter LS Serials

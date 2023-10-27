@@ -19,6 +19,11 @@ function [channelUpperSize,cumuPercent,medianVal,meanVal,passingVal]=diff2cum(in
 % @references:
 % NONE
 %----------------------------------------------------------------------------------------------------
+channelUpperSize=[];
+cumuPercent=[];
+medianVal=nan;
+meanVal=nan;
+passingVal=nan;
 % discard invalid value
 validValId=(indexVar>=rangeOfIndexVar(1))&(indexVar<=rangeOfIndexVar(2));
 indexVar=indexVar(validValId);
@@ -33,6 +38,9 @@ halfLogarithmicSize=(tempVar(2:end)+tempVar(1:end-1))./2;
 channelUpperSize=2.^(halfLogarithmicSize)+min(middleSizeAndMaxLim)-1e-7;
 
 nChannel=length(channelUpperSize);
+if nChannel<2
+    return;
+end
 %channelLowerSize=zeros(nChannel,1);
 cumuPercent=zeros(nChannel,1);
 %medianVal=nan;

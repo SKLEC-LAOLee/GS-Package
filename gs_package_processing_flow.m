@@ -5,17 +5,19 @@ function gs_package_processing_flow(userSettings)
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
 % @version:     Ver1.1, 2023.10.22
 %----------------------------------------------------------------------------------------------------
-sampleSettings=readSampleSettings(userSettings);
 userSettings.instrumentId=1;
+sampleSettings=readSampleSettings(userSettings);
 rawData=readCoulterLsData(userSettings,sampleSettings);
 
 if isempty(rawData)
     userSettings.instrumentId=11;
+    sampleSettings=readSampleSettings(userSettings);
     rawData=readCamSizerData(userSettings,sampleSettings);
 end
 
 if isempty(rawData)
     userSettings.instrumentId=21;
+    sampleSettings=readSampleSettings(userSettings);
     rawData=readMalvernData(userSettings,sampleSettings);
 end
 

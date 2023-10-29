@@ -194,7 +194,21 @@ for iSample=1:sampleNum
                     continue;
                 end
                 validFileNum=validFileNum+1;
-                
+                % replace invalid characters with '-' in SampleName, invalid characters: '*."/\[]:;|,?<>' 
+                thisSampleName=strrep(thisSampleName,'*','-');
+                thisSampleName=strrep(thisSampleName,'.','-');
+                thisSampleName=strrep(thisSampleName,'"','-');
+                thisSampleName=strrep(thisSampleName,'/','-');
+                thisSampleName=strrep(thisSampleName,'\','-');
+                thisSampleName=strrep(thisSampleName,'[','-');
+                thisSampleName=strrep(thisSampleName,']','-');
+                thisSampleName=strrep(thisSampleName,':','-');
+                thisSampleName=strrep(thisSampleName,';','-');
+                thisSampleName=strrep(thisSampleName,'|','-');
+                thisSampleName=strrep(thisSampleName,',','-');
+                thisSampleName=strrep(thisSampleName,'?','-');
+                thisSampleName=strrep(thisSampleName,'<','-');
+                thisSampleName=strrep(thisSampleName,'>','-');
                 rawData(validFileNum).instrumentId=userSettings.instrumentId;
                 rawData(validFileNum).sampleName=thisSampleName;
                 if isnan(thisSampleId)

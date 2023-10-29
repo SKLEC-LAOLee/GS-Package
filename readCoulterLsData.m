@@ -196,13 +196,28 @@ for iSample=1:sampleNum
             if thisDiscardFlag==true
                 break;
             end
-
+            % replace invalid characters with '-' in SampleName, invalid characters: '*."/\[]:;|,?<>' 
+            thisSampleName=strrep(thisSampleName,'*','-');
+            thisSampleName=strrep(thisSampleName,'.','-');
+            thisSampleName=strrep(thisSampleName,'"','-');
+            thisSampleName=strrep(thisSampleName,'/','-');
+            thisSampleName=strrep(thisSampleName,'\','-');
+            thisSampleName=strrep(thisSampleName,'[','-');
+            thisSampleName=strrep(thisSampleName,']','-');
+            thisSampleName=strrep(thisSampleName,':','-');
+            thisSampleName=strrep(thisSampleName,';','-');
+            thisSampleName=strrep(thisSampleName,'|','-');
+            thisSampleName=strrep(thisSampleName,',','-');
+            thisSampleName=strrep(thisSampleName,'?','-');
+            thisSampleName=strrep(thisSampleName,'<','-');
+            thisSampleName=strrep(thisSampleName,'>','-');
             validFileNum=validFileNum+1;
             rawData(validFileNum).instrumentId=userSettings.instrumentId;
             rawData(validFileNum).sampleName=thisSampleName;
             if isnan(thisSampleId)
                 thisSampleId=-validFileNum;
             end
+            
             rawData(validFileNum).sampleId=thisSampleId;
             rawData(validFileNum).groupName=thisGroupName;
             rawData(validFileNum).groupId=thisGroupId;
@@ -229,7 +244,7 @@ for iSample=1:sampleNum
             rawData(validFileNum).particleRefractivity=omris(6);
             rawData(validFileNum).particleAbsorptivity=omris(10);
         elseif contains(tempStr,'AnalyzePIDS=')
-            rawData(validFileNum).configInfo=[rawData(validFileNum).configInfo,',',tempStr,',SN= ',serialNumber];
+            rawData(validFileNum).configInfo=[rawData(validFileNum).configInfo,';',strrep(tempStr,'Analyze',''),';SN= ',serialNumber];
         %elseif strcmpi(tempStr,'LSType= 330')==true
         %    rawData(validFileNum).instrumentId=userSettings.instrumentId;
         elseif contains(tempStr,'SerialNumber=')==true
@@ -287,13 +302,11 @@ for iSample=1:sampleNum
     fclose(fidIn);
 
     if getValidDataFlag==true
-        rawData(validFileNum).channelDownSize=[userSettings.MIN_CHANNEL_SIZE_UM;thisSampleData(1:end-1,1)];
-        rawData(validFileNum).channelUpSize=[thisSampleData(1:end,1)];
-        userSettings.MAX_CHANNEL_SIZE_UM=max([userSettings.MAX_CHANNEL_SIZE_UM,max(rawData(validFileNum).channelDownSize)]);
-        rawData(validFileNum).channelUpSize(rawData(validFileNum).channelUpSize>userSettings.MAX_CHANNEL_SIZE_UM)=userSettings.MAX_CHANNEL_SIZE_UM;
+        rawData(validFileNum).channelDownSize=[thisSampleData(1:end-1,1)];
+        rawData(validFileNum).channelUpSize=[thisSampleData(2:end,1)];
         thisSampleLogMidSize=(log2(rawData(validFileNum).channelDownSize)+log2(rawData(validFileNum).channelUpSize))./2;
         rawData(validFileNum).channelMidSize=2.^(thisSampleLogMidSize);
-        rawData(validFileNum).p3=thisSampleData(:,2);
+        rawData(validFileNum).p3=thisSampleData(1:end-1,2);
         % reject the invalid components according to the user-defined "validSizeLim"
         inValidId=(rawData(validFileNum).channelUpSize<rawData(validFileNum).validSizeLim(1))|(rawData(validFileNum).channelDownSize>rawData(validFileNum).validSizeLim(2));
         newP3=rawData(validFileNum).p3;

@@ -196,6 +196,21 @@ for iSample=1:sampleNum
     if thisDiscardFlag==true
         continue;
     end
+    % replace invalid characters with '-' in SampleName, invalid characters: '*."/\[]:;|,?<>' 
+    thisSampleName=strrep(thisSampleName,'*','-');
+    thisSampleName=strrep(thisSampleName,'.','-');
+    thisSampleName=strrep(thisSampleName,'"','-');
+    thisSampleName=strrep(thisSampleName,'/','-');
+    thisSampleName=strrep(thisSampleName,'\','-');
+    thisSampleName=strrep(thisSampleName,'[','-');
+    thisSampleName=strrep(thisSampleName,']','-');
+    thisSampleName=strrep(thisSampleName,':','-');
+    thisSampleName=strrep(thisSampleName,';','-');
+    thisSampleName=strrep(thisSampleName,'|','-');
+    thisSampleName=strrep(thisSampleName,',','-');
+    thisSampleName=strrep(thisSampleName,'?','-');
+    thisSampleName=strrep(thisSampleName,'<','-');
+    thisSampleName=strrep(thisSampleName,'>','-');
 
     validSampleNum=validSampleNum+1;
     rawData(validSampleNum).instrumentId=userSettings.instrumentId;

@@ -238,7 +238,7 @@ for iSample=1:sampleNum
         elseif contains(tempStr,'OMfile=')
             rawData(validFileNum).configInfo=strrep(tempStr,'OMfile=','');
         elseif contains(tempStr,'OMRIs=')
-            rawData(validFileNum).configInfo=[rawData(validFileNum).configInfo,',',tempStr];
+            rawData(validFileNum).configInfo=[rawData(validFileNum).configInfo,';',tempStr];
             omris=str2num(tempStr(7:end)); %#ok<*ST2NM>
             rawData(validFileNum).waterRefractivity=omris(2);
             rawData(validFileNum).particleRefractivity=omris(6);

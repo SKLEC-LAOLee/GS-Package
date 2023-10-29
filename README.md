@@ -21,9 +21,11 @@ LAOLee's email: whli@sklec.ecnu.edu.cn
 - Outputs data reports that can be imported into AnalySize software for end element analysis
 methods in editable format
 - Output reports in accordance with GB/T12763.8
+
 ![particle grading curve](./testData/testgradingCurve.png "grading curve")
 ![diagnostic triangular phase map](./testData/test_BlairMcPherson1999.png "BlairMcPherson1999")
 ![diagnostic triangular phase map](./testData/test_Folk1954.png "Folk1954")
+
 ## Statistical parameters of laboratory operation, particle size and shape
 - ``instrumentId``: 
     - = ``1``, coulter LS Serials

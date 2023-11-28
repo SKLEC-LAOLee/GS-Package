@@ -134,6 +134,7 @@ allFile=char(tempVar.name);
 sampleNum=size(allFile,1);
 validFileNum=0;
 if sampleNum<1
+    close(hidWait);
     return;
 end
 

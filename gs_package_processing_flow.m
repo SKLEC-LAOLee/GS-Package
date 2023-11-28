@@ -21,6 +21,11 @@ if isempty(rawData)
     rawData=readMalvernData(userSettings,sampleSettings);
 end
 
+if isempty(rawData)
+    userSettings.instrumentId=31;
+    rawData=readLISSTData(userSettings,[]);
+end
+
 if (isempty(sampleSettings))&&(~isempty(rawData))
     warndlg("Warning: This is the first time the raw data has been processed and the sample setting information file has not been edited.");
 end

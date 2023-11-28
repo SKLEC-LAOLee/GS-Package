@@ -51,15 +51,16 @@ function plotClassificationScheme(statisticalParams,userSettings)
 %----------------------------------------------------------------------------------------------------
 nSample=length(statisticalParams);
 allGroupId=zeros(nSample,1);
-data=zeros(nSample,4);
+data=nan(nSample,4);
 groupStyle={'b.','k*','rO','gsqare','b^','bpentagram','bdiamond','bhexgram','b<','b>','r.','k*','bO','bsqare','g^','rpentagram','rdiamond','rhexgram','r<','r>'};
-
 for iSample=1:nSample
-    allGroupId(iSample,1)=statisticalParams(iSample).groupId;
-    data(iSample,1)=statisticalParams(iSample).gravel;
-    data(iSample,2)=statisticalParams(iSample).sand;
-    data(iSample,3)=statisticalParams(iSample).silt;
-    data(iSample,4)=statisticalParams(iSample).clay;
+    if statisticalParams(iSample).valid
+        allGroupId(iSample,1)=statisticalParams(iSample).groupId;
+        data(iSample,1)=statisticalParams(iSample).gravel;
+        data(iSample,2)=statisticalParams(iSample).sand;
+        data(iSample,3)=statisticalParams(iSample).silt;
+        data(iSample,4)=statisticalParams(iSample).clay;
+    end
 end
 [uniqueGroupIds,groupNameIndex]=unique(allGroupId);
 nGroup=length(uniqueGroupIds);

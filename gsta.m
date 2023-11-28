@@ -1,9 +1,9 @@
-function [trendStrength,trendDirection]=gsta(dcGrainsize,dcShape,x,y,dm,sorting,skewness,shape,scaleRange,methodName)
+function [trendStrength,trendDirection]=gsta(dcGrainsize,dcShape,x,y,dm,sorting,skewness,shape,scaleRange,methodName,ruleCode)
 %----------------------------------------------------------------------------------------------------
 % @file name:   gsta.m
 % @description: 沉积物粒度、粒型输移趋势计算
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
-% @version:     Ver1.0, 2023.10.01
+% @version:     Ver1.0, 2023.11.26
 %----------------------------------------------------------------------------------------------------
 % @param:
 % dcGrainsize, 粒径的有效采样距离(趋势相关的临近点判据), n(采样点个数)*2数组, 第一列为最小有效距离,第二列为最大有效距离
@@ -37,7 +37,17 @@ function [trendStrength,trendDirection]=gsta(dcGrainsize,dcShape,x,y,dm,sorting,
 %                           , 增加一条粒型变好的独立输移趋势规则
 %    ='1d-var-shape'    一维定长粒型趋势, gao-collins方法降维至1d,输移轴向已知, 粒型梯度越大矢量越长
 %                           , 仅使用粒型变好的独立输移趋势规则
-%
+% ruleCode, 规则编码
+%    =1, dmA>=dmB, sortingA>=sortingB, SkA<=SkB
+%    =2, dmA<=dmB, sortingA>=sortingB, SkA>=SkB
+%    =3, dmA>=dmB, sortingA>=sortingB, SkA>=SkB
+%    =4, dmA<=dmB, sortingA>=sortingB, SkA<=SkB
+%    =5, dmA>=dmB, sortingA<=sortingB, SkA<=SkB
+%    =6, dmA<=dmB, sortingA<=sortingB, SkA>=SkB
+%    =7, dmA>=dmB, sortingA<=sortingB, SkA>=SkB
+%    =8, dmA<=dmB, sortingA<=sortingB, SkA<=SkB
+%    =12, (ruleCode==1)||(ruleCode==2)
+%    =56, (ruleCode==5)||(ruleCode==6)
 % @return: 
 % trendStrength, 输移趋势矢量长度, n(采样点个数)*1数组
 % trendDirection, 输移趋势矢量角度(去向,正北为0,顺时针变大), n(采样点个数)*1数组
@@ -82,6 +92,13 @@ end
 if methodCode>=4 %1d模式下，只允许输入起点距在x变量
     y=x.*0;
 end
+
+if ruleCode==12
+    ruleCode=9;
+elseif ruleCode=56
+    ruleCode=10;
+end
+
 if isempty(scaleRange)
     scaleRange=zeros(4,2);
     if (haveGrain==true)
@@ -126,17 +143,24 @@ for iPoint=1:nPoint
     if (haveGrain==true)
         isGrainsizeNeighbor=(allDistance>1e-9)&(allDistance>=dcGrainsize(iPoint,1))&(allDistance<=dcGrainsize(iPoint,2));
         grainsizeNeighborId=find(isGrainsizeNeighbor);
-        %沉积物在运移方向上分选变好（sorting变小）、粒径变细（dm变大）且更加负偏（skewness变小）
-        trendRuleA=(isGrainsizeNeighbor==true)&(sorting(iPoint)>sorting)&((dm(iPoint)<dm)&(skewness(iPoint)>skewness));
-        %沉积物在运移方向上分选变好（sorting变小）、粒径变粗（dm变小）且更加正偏（skewness变大）
-        trendRuleB=(isGrainsizeNeighbor==true)&(sorting(iPoint)>sorting)&((dm(iPoint)>dm)&(skewness(iPoint)<skewness));
+        grainTrendRule{1}=(isGrainsizeNeighbor==true)&(sorting(iPoint)>=sorting)&((dm(iPoint)>=dm)&(skewness(iPoint)<=skewness));
+        grainTrendRule{2}=(isGrainsizeNeighbor==true)&(sorting(iPoint)>=sorting)&((dm(iPoint)<=dm)&(skewness(iPoint)>=skewness));
+        grainTrendRule{3}=(isGrainsizeNeighbor==true)&(sorting(iPoint)>=sorting)&((dm(iPoint)>=dm)&(skewness(iPoint)>=skewness));
+        grainTrendRule{4}=(isGrainsizeNeighbor==true)&(sorting(iPoint)>=sorting)&((dm(iPoint)<=dm)&(skewness(iPoint)<=skewness));
+        grainTrendRule{5}=(isGrainsizeNeighbor==true)&(sorting(iPoint)<=sorting)&((dm(iPoint)>=dm)&(skewness(iPoint)<=skewness));
+        grainTrendRule{6}=(isGrainsizeNeighbor==true)&(sorting(iPoint)<=sorting)&((dm(iPoint)<=dm)&(skewness(iPoint)>=skewness));
+        grainTrendRule{7}=(isGrainsizeNeighbor==true)&(sorting(iPoint)<=sorting)&((dm(iPoint)>=dm)&(skewness(iPoint)>=skewness));
+        grainTrendRule{8}=(isGrainsizeNeighbor==true)&(sorting(iPoint)<=sorting)&((dm(iPoint)<=dm)&(skewness(iPoint)<=skewness));
+        grainTrendRule{9}=grainTrendRule{1}|grainTrendRule{2};
+        grainTrendRule{10}=grainTrendRule{5}|grainTrendRule{6};
+
         % var方法下，认为各个参数是等权的，在1d确定性的上下游输沙路径上，梯度越大输移概率越高
         nNeighbor=length(grainsizeNeighborId);
         for iNeighbor=1:nNeighbor
             thisNeighbor=grainsizeNeighborId(iNeighbor);
             uGrainsize=0;
             vGrainsize=0;
-            if (trendRuleA(thisNeighbor))||(trendRuleB(thisNeighbor))
+            if (grainTrendRule{ruleCode}(thisNeighbor)==true)
                 if strengthIsVar==true
                     trendLength=variationDm(thisNeighbor)+variationSorting(thisNeighbor)+variationSkewness(thisNeighbor);
                 else
@@ -152,14 +176,14 @@ for iPoint=1:nPoint
         isShapeNeighbor=(allDistance>1e-9)&(allDistance>=dcShape(iPoint,1))&(allDistance<=dcShape(iPoint,2));
         shapeNeighborId=find(isShapeNeighbor);
         %沉积物在运移方向上颗粒变圆（shape变大）
-        trendRuleC=(isShapeNeighbor==true)&(shape(iPoint)<shape);
+        shapeTrendRule=(isShapeNeighbor==true)&(shape(iPoint)<shape);
         % var方法下，认为各个参数是等权的，在1d确定性的上下游输沙路径上，梯度越大输移概率越高
         nNeighbor=length(shapeNeighborId);
         for iNeighbor=1:nNeighbor
             thisNeighbor=shapeNeighborId(iNeighbor);
             uShape=0;
             vShape=0;
-            if (trendRuleC(thisNeighbor)==true) %考虑一个粒型参数
+            if (shapeTrendRule(thisNeighbor)==true) %考虑一个粒型参数
                 if strengthIsVar==true
                     trendLength=variationShape(thisNeighbor);
                 else
@@ -175,7 +199,11 @@ end
 %平滑矢量,滤去可能的搬运趋势"噪音": dcGrainsize范围内取均值, 认为粒度最大可显现趋势的距离小于粒型
 for iPoint=1:nPoint
     allDistance=sqrt((x-x(iPoint)).^2+(y-y(iPoint)).^2);
-    isGrainsizeNeighbor=(allDistance<=dcGrainsize(iPoint,2));
+    if (haveGrain==true)
+        isGrainsizeNeighbor=(allDistance<=dcGrainsize(iPoint,2));
+    else
+        isGrainsizeNeighbor=(allDistance<=dcShape(iPoint,2)); %纯shape模式
+    end
     nNeighbor=sum(isGrainsizeNeighbor);
     smoothedTrendU(iPoint)=sum(trendU(isGrainsizeNeighbor))./nNeighbor;
     smoothedTrendV(iPoint)=sum(trendV(isGrainsizeNeighbor))./nNeighbor;

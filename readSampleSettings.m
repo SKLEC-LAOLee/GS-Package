@@ -53,6 +53,8 @@ if exist(userSettings.sampleSettingFileName,"file")==false
             rawData=readCamSizerData(userSettings,sampleSettings);
         case 21
             rawData=readMalvernData(userSettings,sampleSettings);
+        case 31
+            rawData=readLISSTData(userSettings,sampleSettings);
     end
     nSample=length(rawData);
     if nSample>0

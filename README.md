@@ -1,5 +1,5 @@
 # GS-Package
-A matlab package for processing sediment grain size and shape with support for Camsizer X2, Coulter LS, and Malvern Mastersizer 2000/3000 instruments.
+A matlab package for processing sediment grain size and shape with support for LISST200X, Camsizer X2, Coulter LS, and Malvern Mastersizer 2000/3000 instruments.
 
 GS-Package was originally developed to fulfill the research needs of SKLEC students in ECNU. It is hoped that GS-Package will help them to make fewer duplicate wheels and can make writing junk papers more enjoyable and convenient.
 
@@ -9,9 +9,10 @@ LAOLee's email: whli@sklec.ecnu.edu.cn
 ## Compatible Instruments
 - Microtrac Cmasizer X2
 - Coulter LS13320
-- Coulter LS950
+- Coulter LS100
 - Malvern MasterSizer 2000
 - Malvern MasterSizer 3000
+- Sequoia LISST200X
 ## Currently implemented functions
 - output metadata report
 - Characterization of particle size and shape
@@ -31,6 +32,7 @@ methods in editable format
     - = ``1``, coulter LS Serials
     - =``11``, camsizer X2
     - =``21``, malvern MasterSizer Serials
+    - =``31``, Sequoia LISST200X
 - ``analysisTime``: Time to start on-board measurements(datetime)
 - ``analysisPeriod``: measurement period(s)
 - ``obscuration``: obscuration(%), only for laser diffraction method
@@ -79,6 +81,13 @@ methods in editable format
   - =`Folk1954`  , `gravel`==0
 - `upSize_GBT12763`: upper limit size of the channels which are defined in GBT12763, (um)
 - `Q3_GBT12763`: cumulative volume percentage of the channels which are defined in GBT12763, (%)
+- `depth`: water depth, only used in LISST 200X
+- `temperature`: water depth, only used in LISST 200X
+- `extADC2`: external ADC2, only used in LISST 200X
+- `extADC3`: external ADC3, only used in LISST 200X
+- `totalVolumeConcentration`: total volume concentration, only used in LISST 200X
+- `opticalTransmission`: optical transmission, only used in LISST 200X
+- `beamAttenuation`: beam attenuation, only used in LISST 200X
 - `spht_50_2`: median of sphericity, inferred from the original exported accumulation curve of particle shape
 - `spht_m_2`: mean of sphericity, inferred from the original exported accumulation curve of particle shape
 - `b_l_50_2`: median of aspect ratio, inferred from the original exported accumulation curve of particle shape

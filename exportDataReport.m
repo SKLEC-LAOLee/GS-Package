@@ -203,7 +203,11 @@ if userSettings.exportMetadata
     outputMetadatafileName=[userSettings.outputPath,userSettings.prefixString,'_Metadata_',char(exportTime),'.csv'];
     if strcmpi(userSettings.language,'cn')
         fidoutMetadata=fopen(outputMetadatafileName,"wt","n","GB2312");
-        fprintf(fidoutMetadata,'目录,文件名,批次,样品名称,样品序号,仪器类型,上机配置文件,统计标准,上机时间,上机时长(s),循环泵速,比表面积,分散剂折射率,颗粒折射率,颗粒吸收率,遮光度,存在粒形数据,有效下限um,有效上限um\n');
+        if (userSettings.instrumentId>30)&&(userSettings.instrumentId<40)
+            fprintf(fidoutMetadata,'目录,文件名,批次,样品名称,样品序号,仪器类型,上机配置文件,统计标准,上机时间,上机时长(s),水深,水温,外接ADC2,外接ADC3,总体积浓度,透射强度,光衰,有效下限um,存在粒形数据,有效上限um\n');
+        else
+            fprintf(fidoutMetadata,'目录,文件名,批次,样品名称,样品序号,仪器类型,上机配置文件,统计标准,上机时间,上机时长(s),循环泵速,比表面积,分散剂折射率,颗粒折射率,颗粒吸收率,遮光度,存在粒形数据,有效下限um,有效上限um\n');
+        end
     else
         fidoutMetadata=fopen(outputMetadatafileName,"wt","n","UTF-8");
         fprintf(fidoutMetadata,'path,fileName,group,name,id,instrument,configFile,sizeMethod,on_boardTime,on_boardPeriod,pumpSpeed,SSa,waterRefractivity,particleRefractivity,particleAbsorptivity,obscuration,shapeDataStatus,validLowerSize,validUpperSize\n');
@@ -217,7 +221,11 @@ if userSettings.exportGBT12763
     channelUp=statisticalParams(1).upSize_GBT12763;
     nChannel=length(channelUp);
     for iChannel=1:nChannel
-        fprintf(fidoutGB,',<%dum(%%)',channelUp(iChannel));
+        if mod(channelUp(iChannel),1)<1e-4
+            fprintf(fidoutGB,',<%dum(%%)',channelUp(iChannel));
+        else
+            fprintf(fidoutGB,',<%.1fum(%%)',channelUp(iChannel));
+        end
     end
     fprintf(fidoutGB,'\n');
 end
@@ -248,6 +256,9 @@ if userSettings.exportUserComponent
 end
 
 for iSample=1:nSample
+    if statisticalParams(iSample).valid==false
+        continue;
+    end
     if userSettings.exportMetadata
         fprintf(fidoutMetadata,'''%s,''%s',statisticalParams(iSample).dataPath,statisticalParams(iSample).fileName);
         fprintf(fidoutMetadata,',''%s,''%s,%d',statisticalParams(iSample).groupName,statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
@@ -255,12 +266,22 @@ for iSample=1:nSample
         fprintf(fidoutMetadata,',''%s''',statisticalParams(iSample).configInfo);
         fprintf(fidoutMetadata,',''%s',statisticalParams(iSample).type);
         fprintf(fidoutMetadata,',%s,%d',char(statisticalParams(iSample).analysisTime,'uuuu/MM/dd HH:mm:ss'),statisticalParams(iSample).analysisPeriod);
-        fprintf(fidoutMetadata,',%.0f',statisticalParams(iSample).pumpSpeed);
-        fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).SSa);
-        fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).waterRefractivity);
-        fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).particleRefractivity);
-        fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).particleAbsorptivity);
-        fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).obscuration);
+        if (statisticalParams(iSample).instrumentId>30)&&(statisticalParams(iSample).instrumentId<40)
+            fprintf(fidoutMetadata,',%.2f',statisticalParams(iSample).depth);
+            fprintf(fidoutMetadata,',%.2f',statisticalParams(iSample).temperature);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).extADC2);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).extADC3);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).totalVolumeConcentration);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).opticalTransmission);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).beamAttenuation);
+        else
+            fprintf(fidoutMetadata,',%.0f',statisticalParams(iSample).pumpSpeed);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).SSa);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).waterRefractivity);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).particleRefractivity);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).particleAbsorptivity);
+            fprintf(fidoutMetadata,',%.3f',statisticalParams(iSample).obscuration);
+        end
         fprintf(fidoutMetadata,',%d',statisticalParams(iSample).haveShapeData);
         fprintf(fidoutMetadata,',%.1f,%.1f',statisticalParams(iSample).validSizeLim(1),statisticalParams(iSample).validSizeLim(2));
         fprintf(fidoutMetadata,'\n');

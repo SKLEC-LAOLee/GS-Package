@@ -1,9 +1,9 @@
-function rawData=readMalvernData(userSettings,sampleSettings)
+function rawData=readLISSTData(userSettings,sampleSettings)
 %----------------------------------------------------------------------------------------------------
-% @file name:   readMalvernData.m
-% @description: Read text reports exported by Malvern MasterSizer 2000/3000 software.
+% @file name:   readLISSTData.m
+% @description: Batch read all *.csv data files in the LISST data directory
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
-% @version:     Ver1.1, 10/21/2023
+% @version:     Ver1.1, 11/27/2023
 %----------------------------------------------------------------------------------------------------
 % userSettings.
 %             dataPath: full path of the data files
@@ -12,7 +12,10 @@ function rawData=readMalvernData(userSettings,sampleSettings)
 %            = false load the rawData.mat if exists in the dataPath; otherwise, read data from raw files
 %  MIN_CHANNEL_SIZE_UM: lower limit of instrument detection (um), should be greater than 0, default is 0.01um
 %  MAX_CHANNEL_SIZE_UM: upper limit of instrument detection (um), default is 10mm
-%         instrumentId: = 1, coulter LS Serials; =11, camsizer X2; =21, malvern MasterSizer Serials
+%         instrumentId: = 1, coulter LS Serials;
+%                       =11, camsizer X2; 
+%                       =21, malvern MasterSizer Serials
+%                       =31, LISST200X
 % sampleSettings.
 %            dataPath: path of the raw data
 %            fileName: file name of the raw data
@@ -28,15 +31,16 @@ function rawData=readMalvernData(userSettings,sampleSettings)
 %   exportToAnalySize: export the sample data to AnalySize
 %                      =0, disable
 %                      =1, enable
-% @return: 
+%
+% @return:
 % rawData.
 %           dataPath: full path of the raw-data file
 %           fileName: file name of the raw-data file
-%       instrumentId: instrument code, here is 21
-%                     = 1, coulter LS 13320
-%                     =11, camsizer X2
-%                     =21, malvern
-%                     =99, unknown
+%       instrumentId: instrument code, here is 1
+%         instrumentId: = 1, coulter LS Serials;
+%                       =11, camsizer X2; 
+%                       =21, malvern MasterSizer Serials
+%                       =31, LISST200X
 %          groupName: sample group
 %            groupId: unique numeric id of the group
 %         sampleName: sample name
@@ -107,17 +111,6 @@ function rawData=readMalvernData(userSettings,sampleSettings)
 %            sfCorey: Corey shape factor=channelSize_xMa_min/sqrt(channelSize_xFe_min*channelSize_xFe_max)
 % @references:
 % NONE
-% @others:
-% How to export text data in Mastersizer 2000/3000 software?
-% (1) Edit menu>>User grainsize>>Edit grainsize: Load grainsize, select malvernGrainsize.siz
-% (2) Copy malvernExportDataForGSPackage.edf to the following directory:
-%     C:\Users\Public\Documents\Malvern Instruments\Mastersizer 2000\Export Templates
-% (3) shift+left click of mouse button to select the data file >> File menu >> Export Data:
-%     .Use Data Templates = malvernExportDataForGSPackage
-%     .Format Options = Use tabs as separators, exclude header rows.
-%     .Export data to file, select text file (*.txt)
-%     .Check to overwrite files
-%     .Output filename suffixes only allowed as *.mal
 %----------------------------------------------------------------------------------------------------
 rawData={};
 
@@ -125,36 +118,79 @@ if userSettings.dataPath(end)~='\'
     userSettings.dataPath(end+1)='\';
 end
 
-hidWait=waitbar(0,'Reading Malvern data, please wait...');
+hidWait=waitbar(0,'Reading LISST data, please wait...');
 if exist([userSettings.dataPath,'rawData.mat'],'file')&&(userSettings.forceReadRawData==false)
     load([userSettings.dataPath,'rawData.mat'],'-mat','rawData');
     close(hidWait);
     return;
 end
 
-suffix='.mal';
+suffix='.csv';
 tempVar=dir([userSettings.dataPath,'*',suffix]);
 allFile=char(tempVar.name);
 fileNum=size(allFile,1);
 instrumentDataTable=[];
 validSampleNum=0;
 
-channelSize=load('malvernGrainsize.siz','-ascii');
-channelSize=channelSize(2:end);
-dataFileId=[];
+channelSize=[1
+    1.48
+    1.74
+    2.05
+    2.42
+    2.86
+    3.38
+    3.98
+    4.7
+    5.55
+    6.55
+    7.72
+    9.12
+    10.8
+    12.7
+    15
+    17.7
+    20.9
+    24.6
+    29.1
+    34.3
+    40.5
+    47.7
+    56.3
+    66.5
+    78.4
+    92.6
+    109
+    129
+    152
+    180
+    212
+    250
+    297
+    354
+    420
+    500];
+
+dataFileId=nan(195*fileNum,1);
+instrumentDataTable=nan(195*fileNum,61);
+sampleNum=0;
 for iFile=1:fileNum
     thisDataFileName=allFile(iFile,:);
+    thisDataTable=load(strcat(userSettings.dataPath,thisDataFileName),'-ascii');
     fileIds=zeros(size(thisDataTable,1),1)+iFile;
-    instrumentDataTable=[instrumentDataTable;readtable(strcat(userSettings.dataPath,thisDataFileName),'FileType','text')];
-    dataFileId=[dataFileId;fileIds];
+    instrumentDataTable(sampleNum+1:sampleNum+size(thisDataTable,1),:)=thisDataTable;
+    dataFileId(sampleNum+1:sampleNum+size(thisDataTable,1),1)=fileIds;
+    sampleNum=sampleNum+size(thisDataTable,1);
 end
+instrumentDataTable=instrumentDataTable(1:sampleNum,:);
+dataFileId=dataFileId(1:sampleNum,:);
 [sampleNum,varNum]=size(instrumentDataTable);
 if sampleNum<1
+    fprintf('No valid data in the selected file.\n');
     close(hidWait);
     return;
 end
-if varNum~=110
-    fprintf('Data export template error, only support malvernExportDataForGSPackage.edf and malvernGrainsize.siz.\n');
+if varNum~=61
+    fprintf('Invalid LISST data files.\n');
     close(hidWait);
     return;
 end
@@ -166,16 +202,16 @@ else
     lastLevelDataPath=userSettings.dataPath(backslashId(end-1)+1:backslashId(end)-1);
 end
 %
+allSampleTime=datetime(instrumentDataTable(:,43),instrumentDataTable(:,44),instrumentDataTable(:,45),instrumentDataTable(:,46),instrumentDataTable(:,47),instrumentDataTable(:,48));
+
 for iSample=1:sampleNum
-    thisSampleName=instrumentDataTable.Var1{iSample};
+    thisSampleName=char(allSampleTime(iSample),'yyyy-MM-dd-HH-mm-ss');
     thisDiscardFlag=false;
     thisSampleId=nan;
     validSizeLim=[0,inf];
     thisGroupName='undefined';
     thisGroupId=-999;
     exportToAnalySize=1;
-
-    thisSampleData=zeros(500,2);
 
     %read user defined infomation.
     if ~isempty(sampleSettings)
@@ -227,24 +263,31 @@ for iSample=1:sampleNum
     rawData(validSampleNum).dataPath=userSettings.dataPath;
     rawData(validSampleNum).fileName=allFile(dataFileId(iSample),:);
     rawData(validSampleNum).exportToAnalySize=exportToAnalySize;
-    rawData(validSampleNum).configInfo=instrumentDataTable.Var3{iSample};
+    rawData(validSampleNum).configInfo='LISST';
     rawData(validSampleNum).type='x_area';
-    rawData(validSampleNum).analysisTime=instrumentDataTable.Var2(iSample); %datetime类型
+    rawData(validSampleNum).analysisTime=allSampleTime(iSample); %datetime类型
     rawData(validSampleNum).validSizeLim=validSizeLim;
     rawData(validSampleNum).analysisPeriod=0;
-    rawData(validSampleNum).pumpSpeed=instrumentDataTable.Var4(iSample);
-    rawData(validSampleNum).SSa=instrumentDataTable.Var5(iSample);
-    rawData(validSampleNum).waterRefractivity=instrumentDataTable.Var6(iSample);
-    rawData(validSampleNum).particleRefractivity=instrumentDataTable.Var7(iSample);
-    rawData(validSampleNum).particleAbsorptivity=instrumentDataTable.Var8(iSample);
-    rawData(validSampleNum).obscuration=instrumentDataTable.Var9(iSample);
+    rawData(validSampleNum).pumpSpeed=0;
+    rawData(validSampleNum).SSa=0;
+    rawData(validSampleNum).waterRefractivity=0;
+    rawData(validSampleNum).particleRefractivity=0;
+    rawData(validSampleNum).particleAbsorptivity=0;
+    rawData(validSampleNum).obscuration=0;
+    rawData(validSampleNum).depth=instrumentDataTable(iSample,41);
+    rawData(validSampleNum).temperature=instrumentDataTable(iSample,42);
+    rawData(validSampleNum).extADC2=instrumentDataTable(iSample,49);
+    rawData(validSampleNum).extADC3=instrumentDataTable(iSample,59);
+    rawData(validSampleNum).totalVolumeConcentration=instrumentDataTable(iSample,51);
+    rawData(validSampleNum).opticalTransmission=instrumentDataTable(iSample,60);
+    rawData(validSampleNum).beamAttenuation=instrumentDataTable(iSample,61);
 
     rawData(validSampleNum).channelDownSize=channelSize(1:end-1,1);
     rawData(validSampleNum).channelUpSize=channelSize(2:end,1);
     thisSampleLogMidSize=(log2(rawData(validSampleNum).channelDownSize)+log2(rawData(validSampleNum).channelUpSize))./2;
     rawData(validSampleNum).channelMidSize=2.^(thisSampleLogMidSize);
-    q3=table2array(instrumentDataTable(iSample,10:end))';
-    rawData(validSampleNum).p3=diff(q3);
+
+    rawData(validSampleNum).p3=instrumentDataTable(iSample,1:36)'./sum(instrumentDataTable(iSample,1:36)).*100;
     % reject the invalid components according to the user-defined "validSizeLim"
     inValidId=(rawData(validSampleNum).channelUpSize<rawData(validSampleNum).validSizeLim(1))|(rawData(validSampleNum).channelDownSize>rawData(validSampleNum).validSizeLim(2));
     newP3=rawData(validSampleNum).p3;

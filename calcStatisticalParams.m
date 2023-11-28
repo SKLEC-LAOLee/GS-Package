@@ -263,12 +263,19 @@ for iSample=1:nSample
     %--------------------------------------
     %for particle size of complete sample
     %--------------------------------------
+    if sum(isnan(rawData(iSample).adjustQ3))>1 %invalid data
+        statisticalParams(iSample).valid=false;
+        continue;
+    else
+        statisticalParams(iSample).valid=true;
+    end
     thisQ3=rawData(iSample).adjustQ3+(1:length(rawData(iSample).adjustQ3))'.*1e-7; %Add incremental minima to avoid non-monotonic incremental problems
     try
         Di=interp1(thisQ3,rawData(iSample).channelUpSize,[5 10 16 25 50 75 84 90 95]); %um, passing below
     catch
         continue;
     end
+    Di(isnan(Di))=rawData(iSample).channelUpSize(1);
     statisticalParams(iSample).d05=Di(1);
     statisticalParams(iSample).d10=Di(2);
     statisticalParams(iSample).d16=Di(3);
@@ -301,12 +308,24 @@ for iSample=1:nSample
     statisticalParams(iSample).sk_Folk1954=tempVar11/tempVar12+tempVar21/tempVar22;
     statisticalParams(iSample).kg_Folk1954=(phi95-phi05)/(phi75-phi25)/2.44;
     levelId=find(statisticalParams(iSample).sigma_Folk1954>=stdSortingLevel);
-    statisticalParams(iSample).sortingLevel=levelId(end);
+    if isempty(levelId)
+        statisticalParams(iSample).sortingLevel=6;
+    else
+        statisticalParams(iSample).sortingLevel=levelId(end);
+    end
     statisticalParams(iSample).variance=sqrt(phi84/phi16);
-    
     %contents of gravel, sand, silt and clay
     stdSizeLevel=[3.9 62.5 2000];
     levelFreq=interp1(rawData(iSample).channelUpSize,rawData(iSample).adjustQ3,stdSizeLevel);
+    if isnan(levelFreq(1))
+        levelFreq(1)=0;
+    end
+    if isnan(levelFreq(2))
+        levelFreq(2)=0;
+    end
+    if isnan(levelFreq(3))
+        levelFreq(3)=100;
+    end
     statisticalParams(iSample).gravel=100-levelFreq(3);
     statisticalParams(iSample).sand=levelFreq(3)-levelFreq(2);
     statisticalParams(iSample).silt=levelFreq(2)-levelFreq(1);

@@ -46,6 +46,8 @@ if gravel<1e-4
             classificationCode='M';
         case (sand<10)&&((silt/clay)>=2)
             classificationCode='St';
+        otherwise
+            classificationCode='Error';
     end
 else
     classificationMethod='Blair-McPherson1999';
@@ -81,5 +83,7 @@ else
             classificationCode='(g)MS';
         case (gravel<=5)&&((mud/sand)<=(1/9))
             classificationCode='(g)S';
+        otherwise
+            classificationCode='Error';
     end
 end

@@ -242,7 +242,7 @@ if userSettings.exportAllData
         'dm_Mcmanus,sigma_Mcmanus,sk_Mcmanus,kg_Mcmanus,variance,',...
         'clay,silt,sand,gravel,classificationCode,classificationMethod,',...
         'spht_50_2,spht_m_2,b_l_50_2,b_l_m_2,B_LRec_50_2,B_LRec_m_2,symm_50_2,symm_m_2,rdnsc_50_2,rdnsc_m_2,conv_50_2,conv_m_2,sigmav_50_2,sigmav_m_2,',...
-        'spht_50,spht_m,b_l_50,b_l_m,B_LRec_50,B_LRec_m,symm_50,symm_m,rdnsc_50,rdnsc_m,conv_50,conv_m,sigmav_50,sigmav_m,sfCorey_50,sfCorey_m\n']);
+        'spht_50,spht_m,b_l_50,b_l_m,B_LRec_50,B_LRec_m,symm_50,symm_m,rdnsc_50,rdnsc_m,conv_50,conv_m,sigmav_50,sigmav_m,sfCorey_50,sfCorey_m,trans_50,trans_m,transb_50,transb_m,ellipse_50,ellipse_m\n']);
 end
 
 if userSettings.exportUserComponent
@@ -252,11 +252,11 @@ if userSettings.exportUserComponent
     else
         fidoutUserComponent=fopen(outputUserComponentfileName,"wt","n","UTF-8");
     end
-    fprintf(fidoutUserComponent,'group,name,id,lowerSize,upperSize,volumePercentage,Dm_um,dm_phi,sigma_Mcmanus,sk_Mcmanus,kg_Mcmanus,spht_m,b_l_m,B_LRec_m,symm_m,rdnsc_m,conv_m,sigmav_m,sfCorey_m\n');
+    fprintf(fidoutUserComponent,'group,name,id,lowerSize,upperSize,volumePercentage,Dm_um,dm_phi,sigma_Mcmanus,sk_Mcmanus,kg_Mcmanus,spht_m,b_l_m,B_LRec_m,symm_m,rdnsc_m,conv_m,sigmav_m,sfCorey_m,trans_m,transb_m,ellipse_m\n');
 end
 
 for iSample=1:nSample
-    if statisticalParams(iSample).valid==false
+    if (statisticalParams(iSample).valid==false)||(isempty(statisticalParams(iSample).channelUpSize))
         continue;
     end
     if userSettings.exportMetadata
@@ -315,11 +315,13 @@ for iSample=1:nSample
         fprintf(fidoutGB,',%.3f,%s,%.3f,%.3f',statisticalParams(iSample).sigma_Folk1954,sortingDescription,statisticalParams(iSample).sk_Folk1954,statisticalParams(iSample).kg_Folk1954);
         fprintf(fidoutGB,',%.1f,%.1f,%.1f,%.1f',statisticalParams(iSample).clay,statisticalParams(iSample).silt,statisticalParams(iSample).sand,statisticalParams(iSample).gravel);
         fprintf(fidoutGB,',%s',statisticalParams(iSample).classificationCode);
+
         for iChannel=1:nChannel
             fprintf(fidoutGB,',%.2f',statisticalParams(iSample).Q3_GBT12763(iChannel));
         end
         fprintf(fidoutGB,'\n');
-    end
+end
+
     if userSettings.exportAllData
         fprintf(fidoutAllData,'''%s',statisticalParams(iSample).groupName);
         fprintf(fidoutAllData,',''%s,%d',statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
@@ -349,8 +351,11 @@ for iSample=1:nSample
             fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).conv_50,statisticalParams(iSample).conv_m);
             fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).sigmav_50,statisticalParams(iSample).sigmav_m);
             fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).sfCorey_50,statisticalParams(iSample).sfCorey_m);
+            fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).trans_50,statisticalParams(iSample).trans_m);
+            fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).transb_50,statisticalParams(iSample).transb_m);
+            fprintf(fidoutAllData,',%.3f,%.3f',statisticalParams(iSample).ellipse_50,statisticalParams(iSample).ellipse_m);
         else
-            fprintf(fidoutAllData,',,,,,,,,,,,,,,,,,,,,,,,,,,,,,');
+            fprintf(fidoutAllData,',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,');
         
         end
         fprintf(fidoutAllData,'\n');
@@ -361,7 +366,7 @@ for iSample=1:nSample
         for iUserComponent=1:nUserComponent
             fprintf(fidoutUserComponent,'''%s',statisticalParams(iSample).groupName);
             fprintf(fidoutUserComponent,',''%s,%d',statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
-            fprintf(fidoutUserComponent,',%.1f,%.1f,%.2f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n',...
+            fprintf(fidoutUserComponent,',%.1f,%.1f,%.2f,%.1f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n',...
                 statisticalParams(iSample).userComponent.downSize(iUserComponent),...
                 statisticalParams(iSample).userComponent.upSize(iUserComponent),...
                 statisticalParams(iSample).userComponent.fraction(iUserComponent),...
@@ -377,7 +382,10 @@ for iSample=1:nSample
                 statisticalParams(iSample).userComponent.rdnsc_m(iUserComponent),...
                 statisticalParams(iSample).userComponent.conv_m(iUserComponent),...
                 statisticalParams(iSample).userComponent.sigmav_m(iUserComponent),...
-                statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent));
+                statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent),...
+                statisticalParams(iSample).userComponent.trans_m(iUserComponent),...
+                statisticalParams(iSample).userComponent.transb_m(iUserComponent),...
+                statisticalParams(iSample).userComponent.ellipse_m(iUserComponent));
         end
     end
     if userSettings.exportGradingCurve

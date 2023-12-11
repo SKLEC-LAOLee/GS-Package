@@ -259,6 +259,9 @@ for iSample=1:sampleNum
                 xFe_max3Id=0;
                 xMa_max3Id=0;
                 xc_max3Id=0;
+                trans3Id=0;
+                transb3Id=0;
+                ellipse3Id=0;
                 
                 tabsId=strfind(tempStr,char(9));
                 nVar=length(tabsId)+1;
@@ -302,6 +305,12 @@ for iSample=1:sampleNum
                         xMa_max3Id=iVar;
                     elseif contains(thisVarName,'xc_max3')
                         xc_max3Id=iVar;
+                    elseif contains(thisVarName,'Trans3')
+                        trans3Id=iVar;
+                    elseif contains(thisVarName,'Transb3')
+                        transb3Id=iVar;
+                    elseif contains(thisVarName,'Ellipse3')
+                        ellipse3Id=iVar;
                     end
                 end
                 
@@ -343,6 +352,18 @@ for iSample=1:sampleNum
                 rawData(validFileNum).rdnsc3=zeros(channelNum,1);
                 rawData(validFileNum).pdv=zeros(channelNum,1);
                 rawData(validFileNum).channelMeanSize=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xFe_avg=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xMa_avg=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xc_avg=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xFe_min=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xMa_min=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xc_min=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xFe_max=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xMa_max=zeros(channelNum,1);
+                rawData(validFileNum).channelSize_xc_max=zeros(channelNum,1);
+                rawData(validFileNum).trans3=zeros(channelNum,1);
+                rawData(validFileNum).transb3=zeros(channelNum,1);
+                rawData(validFileNum).ellipse3=zeros(channelNum,1);
                 
                 if spht3Id>0
                     rawData(validFileNum).spht3=thisSampleData(1:channelNum,spht3Id);
@@ -399,6 +420,18 @@ for iSample=1:sampleNum
                 end
                 if xc_max3Id>0
                     rawData(validFileNum).channelSize_xc_max=thisSampleData(1:channelNum,xc_max3Id)*convertToUM;
+                end
+                if trans3Id>0
+                    rawData(validFileNum).trans3=thisSampleData(1:channelNum,trans3Id);
+                end
+                if trans3Id>0
+                    rawData(validFileNum).trans3=thisSampleData(1:channelNum,trans3Id);
+                end
+                if transb3Id>0
+                    rawData(validFileNum).transb3=thisSampleData(1:channelNum,transb3Id);
+                end
+                if ellipse3Id>0
+                    rawData(validFileNum).ellipse3=thisSampleData(1:channelNum,ellipse3Id);
                 end
         end
         % shape data

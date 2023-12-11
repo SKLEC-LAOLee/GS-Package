@@ -6,24 +6,41 @@ function gs_package_processing_flow(userSettings)
 % @version:     Ver1.1, 2023.10.22
 %----------------------------------------------------------------------------------------------------
 userSettings.instrumentId=1;
-sampleSettings=readSampleSettings(userSettings);
+if userSettings.prepareSampleSettingInfo==true
+    sampleSettings=readSampleSettings(userSettings);
+else
+    sampleSettings=[];
+end
 rawData=readCoulterLsData(userSettings,sampleSettings);
 
 if isempty(rawData)
     userSettings.instrumentId=11;
-    sampleSettings=readSampleSettings(userSettings);
+    if userSettings.prepareSampleSettingInfo==true
+        sampleSettings=readSampleSettings(userSettings);
+    else
+        sampleSettings=[];
+    end
     rawData=readCamSizerData(userSettings,sampleSettings);
 end
 
 if isempty(rawData)
     userSettings.instrumentId=21;
-    sampleSettings=readSampleSettings(userSettings);
+    if userSettings.prepareSampleSettingInfo==true
+        sampleSettings=readSampleSettings(userSettings);
+    else
+        sampleSettings=[];
+    end
     rawData=readMalvernData(userSettings,sampleSettings);
 end
 
 if isempty(rawData)
     userSettings.instrumentId=31;
-    rawData=readLISSTData(userSettings,[]);
+    if userSettings.prepareSampleSettingInfo==true
+        sampleSettings=readSampleSettings(userSettings);
+    else
+        sampleSettings=[];
+    end
+    rawData=readLISSTData(userSettings,sampleSettings);
 end
 
 if (isempty(sampleSettings))&&(~isempty(rawData))

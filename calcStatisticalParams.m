@@ -308,7 +308,7 @@ for iSample=1:nSample
     statisticalParams(iSample).sk_Folk1954=tempVar11/tempVar12+tempVar21/tempVar22;
     statisticalParams(iSample).kg_Folk1954=(phi95-phi05)/(phi75-phi25)/2.44;
     levelId=find(statisticalParams(iSample).sigma_Folk1954>=stdSortingLevel);
-    if isempty(levelId)
+    if isempty(levelId)||isnan(levelId(end))
         statisticalParams(iSample).sortingLevel=6;
     else
         statisticalParams(iSample).sortingLevel=levelId(end);
@@ -401,6 +401,9 @@ for iSample=1:nSample
         [~,~,statisticalParams(iSample).conv_50,statisticalParams(iSample).conv_m]=diff2cum(rawData(iSample).conv3,rawData(iSample).adjustP3,[1e-3,1]);
         [~,~,statisticalParams(iSample).rdnsc_50,statisticalParams(iSample).rdnsc_m]=diff2cum(rawData(iSample).rdnsc3,rawData(iSample).adjustP3,[1e-3,1]);
         [~,~,statisticalParams(iSample).sigmav_50,statisticalParams(iSample).sigmav_m]=diff2cum(rawData(iSample).sigmav3,rawData(iSample).adjustP3,[1e-3,1]);
+        [~,~,statisticalParams(iSample).trans_50,statisticalParams(iSample).trans_m]=diff2cum(rawData(iSample).trans3,rawData(iSample).adjustP3,[1e-3,1]);
+        [~,~,statisticalParams(iSample).transb_50,statisticalParams(iSample).transb_m]=diff2cum(rawData(iSample).transb3,rawData(iSample).adjustP3,[1e-3,1]);
+        [~,~,statisticalParams(iSample).ellipse_50,statisticalParams(iSample).ellipse_m]=diff2cum(rawData(iSample).ellipse3,rawData(iSample).adjustP3,[1e-3,1]);
         % 2D DIA have no paticle thickness. So Corey shape factor only can be infered from Xc_Mamin.
         [~,~,statisticalParams(iSample).sfCorey_50,statisticalParams(iSample).sfCorey_m]=diff2cum(rawData(iSample).sfCorey,rawData(iSample).adjustP3,[1e-3,1]);
     end
@@ -432,7 +435,11 @@ for iSample=1:nSample
             statisticalParams(iSample).userComponent.sigmav_m(iUserComponent) =sum(rawData(iSample).sigmav3(thisComponentlId).*thisComponentP3);%mean sigmav
             statisticalParams(iSample).userComponent.conv_m(iUserComponent) =sum(rawData(iSample).conv3(thisComponentlId).*thisComponentP3);%mean conv
             statisticalParams(iSample).userComponent.rdnsc_m(iUserComponent) =sum(rawData(iSample).rdnsc3(thisComponentlId).*thisComponentP3);%mean rdnsc
-            statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent) =sum(rawData(iSample).sfCorey(thisComponentlId).*thisComponentP3); %mean sfCorey 
+            statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent) =sum(rawData(iSample).sfCorey(thisComponentlId).*thisComponentP3); %mean sfCorey
+            statisticalParams(iSample).userComponent.trans_m(iUserComponent) =sum(rawData(iSample).trans3(thisComponentlId).*thisComponentP3); %mean trans
+            statisticalParams(iSample).userComponent.transb_m(iUserComponent) =sum(rawData(iSample).transb3(thisComponentlId).*thisComponentP3); %mean transb
+            statisticalParams(iSample).userComponent.ellipse_m(iUserComponent) =sum(rawData(iSample).ellipse3(thisComponentlId).*thisComponentP3); %mean ellipse
+
         else
             statisticalParams(iSample).userComponent.spht_m(iUserComponent) =nan;
             statisticalParams(iSample).userComponent.symm_m(iUserComponent) =nan;
@@ -442,6 +449,9 @@ for iSample=1:nSample
             statisticalParams(iSample).userComponent.conv_m(iUserComponent) =nan;
             statisticalParams(iSample).userComponent.rdnsc_m(iUserComponent) =nan;
             statisticalParams(iSample).userComponent.sfCorey_m(iUserComponent) =nan;
+            statisticalParams(iSample).userComponent.trans_m(iUserComponent) =nan;
+            statisticalParams(iSample).userComponent.transb_m(iUserComponent) =nan;
+            statisticalParams(iSample).userComponent.ellipse_m(iUserComponent) =nan;
         end
     end
     %

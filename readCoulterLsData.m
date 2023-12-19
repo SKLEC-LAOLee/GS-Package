@@ -5,6 +5,7 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
 % @version:     Ver1.1, 10/21/2023
 %----------------------------------------------------------------------------------------------------
+% @param:
 % userSettings.
 %             dataPath: full path of the data files
 %     forceReadRawData:
@@ -12,7 +13,12 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %            = false load the rawData.mat if exists in the dataPath; otherwise, read data from raw files
 %  MIN_CHANNEL_SIZE_UM: lower limit of instrument detection (um), should be greater than 0, default is 0.01um
 %  MAX_CHANNEL_SIZE_UM: upper limit of instrument detection (um), default is 10mm
-%         instrumentId: = 1, coulter LS Serials; =11, camsizer X2; =21, malvern MasterSizer Serials
+%         instrumentId: 
+%                     = 1, coulter LS 13320
+%                     =11, camsizer X2
+%                     =21, malvern
+%                     =31, LISST200X
+%                     =99, unknown
 % sampleSettings.
 %            dataPath: path of the raw data
 %            fileName: file name of the raw data
@@ -28,15 +34,15 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %   exportToAnalySize: export the sample data to AnalySize
 %                      =0, disable
 %                      =1, enable
-%
-% @return:
+% @return: 
 % rawData.
-%           dataPath: full path of the raw-data file
-%           fileName: file name of the raw-data file
-%       instrumentId: instrument code, here is 1
+%           dataPath: full path of the raw data file
+%           fileName: file name of the raw data file
+%       instrumentId: instrument code
 %                     = 1, coulter LS 13320
 %                     =11, camsizer X2
 %                     =21, malvern
+%                     =31, LISST200X
 %                     =99, unknown
 %          groupName: sample group
 %            groupId: unique numeric id of the group
@@ -44,7 +50,7 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %           sampleId: unique numeric id of the sample
 %  exportToAnalySize: export the sample data to AnalySize. =0, disable; =1, enable
 %         configInfo: configuration file name of the instrument (xxx.cfg)
-%               type: Rules for particle size statistics(string), here is 'x_area'
+%               type: Rules for particle size statistics(string)
 %                     ='xc_min', perpendicular to sieving methods
 %                     ='x_area', perpendicular to laser diffraction methods
 %                     ='xFemin', perpendicular to the width of the vernier methods
@@ -59,6 +65,13 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %  waterRefractivity: water refractivity, only for laser diffraction method
 %particleRefractivity: particle refractivity, only for laser diffraction method
 %particleAbsorptivity: particle absorptivity, only for laser diffraction method
+%              depth: water depth, only for LISST200X
+%        temperature: water temperature, only for LISST200X
+%            extADC2: adc value of external port 2#, only for LISST200X
+%            extADC3: adc value of external port 3#, only for LISST200X
+%totalVolumeConcentration: total volume concentration, only for LISST200X
+%opticalTransmission: optical transmission, only for LISST200X
+%    beamAttenuation: beam attenuation, only for LISST200X
 %    channelDownSize: lower limit size of the channel(um)
 %      channelUpSize: upper limit size of the channel(um)
 %     channelMidSize: logarithmic midpoint size of the channel(um)
@@ -66,7 +79,7 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %                 q3: raw cumulative volume(%)
 %           adjustP3: differential volume percentage after removal of invalid components (%)
 %           adjustQ3: cumulative volume percentage after removal of invalid components (%)
-%      haveShapeData: , here is 0
+%      haveShapeData:
 %                = 0, no particle shape information
 %                = 1, particle shape information only indexed by particle size
 %                = 2, particle shape information both indexed by particle size and normalized shape factor
@@ -78,7 +91,10 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %              conv3: Convexity = sqrt(real area / convex particle area)
 %             rdnsc3: Roundness, ratio of the averaged radius of curvature of all convex regions to the circumscribed cricle of the particle
 %                pdv: volume-based number of particle detections
-%    channelMeanSize: mean value of the particle size
+%             trans3: volume-based number of transparency
+%            transb3: volume-based number of transparency B
+%           ellipse3: volume-based number of ellipse index
+%    channelMeanSize: mean value of the particle size, um, only valid in CamsizerX2 data
 %channelSize_xFe_avg: average feret diameter
 %channelSize_xMa_avg: average martin diameter
 % channelSize_xc_avg: average chord diameter
@@ -107,7 +123,11 @@ function rawData=readCoulterLsData(userSettings,sampleSettings)
 %            q0Rdnsc: cumulative number percentage of roundness, only when haveShapeData==2
 %            sfCorey: Corey shape factor=channelSize_xMa_min/sqrt(channelSize_xFe_min*channelSize_xFe_max)
 % @references:
-% NONE
+%  Retsch Technology GmbH, Manual Evaluation Software CAMSIZER X2(18.10.2018 Version 0002), 2018.
+%  malvern Panalytical. Mastersizer 2000 user manual issue 2.0, 2021. https://www.malvernpanalytical.com/en/learn/knowledge-center/user-manuals/man0247en
+%  Sequoia SCI. LISST-200X user's manual (2022, version 2.3), 2022,https://www.sequoiasci.com/wp-content/uploads/2016/02/LISST-200X_Users_Manual_v2_3.pdf
+%  BeckMan Coulter. LS13320 Laser Diffraction Particle Size Analyzer Instructions for Use, 2020. https://www.beckman.com/search#q=LS%2013%20320&t=coveo-tab-techdocs
+%  https://www.sympatec.com/en/particle-measurement/glossary/particle-shape/
 %----------------------------------------------------------------------------------------------------
 rawData={};
 

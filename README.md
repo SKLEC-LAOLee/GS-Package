@@ -118,6 +118,12 @@ methods in editable format
 - `sigmav_m`: mean of sigmav?, inferred from the grainsize indexed particle shape
 - `sfCorey_50`: median of Corey shape factor, sfCorey=xMa_min/sqrt(xFe_min*xFe_max), inferred from the grainsize indexed  particle shape
 - `sfCorey_m`: mean of Corey shape factor, inferred from the grainsize indexed  particle shape
+- `trans3_50`: median of transparency
+- `trans3_m`: mean of transparency
+- `transb3_50`: median of transparency B
+- `transb3_m`: mean of transparency B
+- `ellipse3_50`: median of ellipse index
+- `ellipse3_m`: mean of ellipse index
 - `userComponent(nComponents)`: parameters of the user-specified components
   - `.upSize`: upper size of the user-specified components
   - `.downSize`: lower size of the user-specified components
@@ -135,6 +141,9 @@ methods in editable format
   - `.conv_m`: mean of convexity
   - `.rdnsc_m`: mean of roundness
   - `.sfCorey_m`: mean of Corey shape factor
+  - `trans3_m`: mean of transparency
+  - `transb3_m`: mean of transparency B
+  - `ellipse3_m`: mean of ellipse index
 ## References
 - Bagheri, G. H., C. Bonadonna, I. Manzella, and P. Vonlanthen. “On the Characterization of Size and Shape of Irregular Particles.” Powder Technology 270 (January 1, 2015): 141–53. https://doi.org/10.1016/j.powtec.2014.10.015.
 - Folk, R.L. and Ward, W.C. (1957) A Study in the Significance of Grain-Size Parameters. Journal of Sedimentary Petrology, 27, 3-26.https://doi.org/10.1306/74D70646-2B21-11D7-8648000102C1865D

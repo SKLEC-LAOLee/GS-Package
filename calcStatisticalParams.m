@@ -6,18 +6,36 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 % @version:     Ver1.1, 2023.10.22
 %----------------------------------------------------------------------------------------------------
 % @param:
+% sampleSettings.
+%            dataPath: path of the raw data
+%            fileName: file name of the raw data
+%                name: sample name
+%            sampleId: sample id, numeric and unique
+%             discard: discard flag
+%                      =0, the sample data is valid
+%                      =1, discard the sample data
+%        minValidSize: minimum valid particle size, in unit of um
+%        maxValidSize: maximum valid particle size, in unit of um
+%           groupName: Name of sample grouping
+%             groupId: id of sample grouping, numeric and unique
+%   exportToAnalySize: export the sample data to AnalySize
+%                      =0, disable
+%                      =1, enable
+% @return: 
 % rawData.
-%           dataPath: full path of the data file
+%           dataPath: full path of the raw data file
 %           fileName: file name of the raw data file
 %       instrumentId: instrument code
 %                     = 1, coulter LS 13320
 %                     =11, camsizer X2
 %                     =21, malvern
+%                     =31, LISST200X
 %                     =99, unknown
 %          groupName: sample group
 %            groupId: unique numeric id of the group
 %         sampleName: sample name
 %           sampleId: unique numeric id of the sample
+%  exportToAnalySize: export the sample data to AnalySize. =0, disable; =1, enable
 %         configInfo: configuration file name of the instrument (xxx.cfg)
 %               type: Rules for particle size statistics(string)
 %                     ='xc_min', perpendicular to sieving methods
@@ -34,6 +52,13 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %  waterRefractivity: water refractivity, only for laser diffraction method
 %particleRefractivity: particle refractivity, only for laser diffraction method
 %particleAbsorptivity: particle absorptivity, only for laser diffraction method
+%              depth: water depth, only for LISST200X
+%        temperature: water temperature, only for LISST200X
+%            extADC2: adc value of external port 2#, only for LISST200X
+%            extADC3: adc value of external port 3#, only for LISST200X
+%totalVolumeConcentration: total volume concentration, only for LISST200X
+%opticalTransmission: optical transmission, only for LISST200X
+%    beamAttenuation: beam attenuation, only for LISST200X
 %    channelDownSize: lower limit size of the channel(um)
 %      channelUpSize: upper limit size of the channel(um)
 %     channelMidSize: logarithmic midpoint size of the channel(um)
@@ -53,7 +78,10 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %              conv3: Convexity = sqrt(real area / convex particle area)
 %             rdnsc3: Roundness, ratio of the averaged radius of curvature of all convex regions to the circumscribed cricle of the particle
 %                pdv: volume-based number of particle detections
-%    channelMeanSize: mean value of the particle size
+%             trans3: volume-based number of transparency
+%            transb3: volume-based number of transparency B
+%           ellipse3: volume-based number of ellipse index
+%    channelMeanSize: mean value of the particle size, um, only valid in CamsizerX2 data
 %channelSize_xFe_avg: average feret diameter
 %channelSize_xMa_avg: average martin diameter
 % channelSize_xc_avg: average chord diameter
@@ -227,6 +255,12 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %           sigmav_m: mean value of sigmav?, calculated using the grainsize indexed particle shape
 %         sfCorey_50: median value of Corey shape factor, calculated using the grainsize indexed  particle shape
 %          sfCorey_m: mean value of Corey shape factor=channelSize_xFe_min/sqrt(channelSize_xFe_avg*channelSize_xFe_max), calculated using the grainsize indexed  particle shape
+%           trans_50: median value of transparency, calculated using the grainsize indexed  particle shape
+%            trans_m: mean value of transparency, calculated using the grainsize indexed particle shape
+%          transb_50: median value of transparency B, calculated using the grainsize indexed  particle shape
+%           transb_m: mean value of transparency B, calculated using the grainsize indexed particle shape
+%         ellipse_50: median value of ellipse index, calculated using the grainsize indexed  particle shape
+%          ellipse_m: mean value of ellipse index, calculated using the grainsize indexed particle shape
 %      userComponent: parameters of the user-specified components
 %             .upSize       : upper size of the user-specified components
 %             .downSize     : lower size of the user-specified components
@@ -244,6 +278,9 @@ function statisticalParams=calcStatisticalParams(rawData,userSettings)
 %             .conv_m       : mean value of convexity, calculated using the grainsize indexed particle shape
 %             .rdnsc_m      : mean value of roundness, calculated using the grainsize indexed particle shape
 %             .sfCorey_m    : mean value of Corey shape factor
+%             .trans_m      : mean value of transparency
+%             .transb_m     : mean value of transparency B
+%             .ellipse_m    : mean value of ellipse index
 % @references:
 % Bagheri, G. H., C. Bonadonna, I. Manzella, and P. Vonlanthen. “On the Characterization of Size and Shape of Irregular Particles.” 
 %          Powder Technology 270 (January 1, 2015): 141–53. https://doi.org/10.1016/j.powtec.2014.10.015.

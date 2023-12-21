@@ -157,14 +157,6 @@ if sampleNum<1
     return;
 end
 
-backslashId=strfind(userSettings.dataPath,'\');
-if length(backslashId)<=1
-    lastLevelDataPath=userSettings.dataPath;  % root dir, for example: "c:\"
-else
-    lastLevelDataPath=userSettings.dataPath(backslashId(end-1)+1:backslashId(end)-1);
-end
-
-%
 for iSample=1:sampleNum
     % readdata
     thisDataFileName=allFile(iSample,:);
@@ -184,7 +176,7 @@ for iSample=1:sampleNum
         userSetRecordNum=length(sampleSettings.name);
         for iSet=1:userSetRecordNum
             % sample search principle: file name and directory are the same
-            if (strcmpi(strrep(thisDataFileName,' ',''),strrep(sampleSettings.fileName{iSet},' ',''))==true)&&(strcmpi(lastLevelDataPath,sampleSettings.dataPath{iSet})==true)
+            if (strcmpi(strrep(thisDataFileName,' ',''),strrep(sampleSettings.fileName{iSet},' ',''))==true)&&(strcmpi(userSettings.dataPath,sampleSettings.dataPath{iSet})==true)
                 if sampleSettings.discard(iSet)==1
                     thisDiscardFlag=true;
                 end
@@ -216,7 +208,6 @@ for iSample=1:sampleNum
                 validFileNum=validFileNum+1;
                 % replace invalid characters with '-' in SampleName, invalid characters: '*."/\[]:;|,?<>' 
                 thisSampleName=strrep(thisSampleName,'*','-');
-                thisSampleName=strrep(thisSampleName,'.','-');
                 thisSampleName=strrep(thisSampleName,'"','-');
                 thisSampleName=strrep(thisSampleName,'/','-');
                 thisSampleName=strrep(thisSampleName,'\','-');

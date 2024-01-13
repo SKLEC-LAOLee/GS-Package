@@ -4,11 +4,11 @@
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
 % @version:     Ver1.0, 2023.10.26
 %----------------------------------------------------------------------------------------------------
-userSettings.sampleSettingFileName='D:\useless.csv'; %sample settings information file, not necessary
-userSettings.dataPath='D:\test\';                     %full path of the raw data files
-userSettings.outputPath='D:\test\outputs\';           %full path of the output files
-userSettings.prefixString='test';                          %prefixes for archive file names
-userSettings.prepareSampleSettingInfo=false;                        %= true, if userSettings.sampleSettingFileName not exist, generate a new one
+userSettings.sampleSettingFileName='D:\workInCloud\00_myWorks\000_论文撰写\202202_动态图像法颗粒分析精度影响因素\数据\all\outputs\settings.csv'; %sample settings information file, not necessary
+userSettings.dataPath='D:\workInCloud\00_myWorks\000_论文撰写\202202_动态图像法颗粒分析精度影响因素\数据\all\';                     %full path of the raw data files
+userSettings.outputPath='D:\workInCloud\00_myWorks\000_论文撰写\202202_动态图像法颗粒分析精度影响因素\数据\all\outputs\';           %full path of the output files
+userSettings.prefixString='all';                          %prefixes for archive file names
+userSettings.prepareSampleSettingInfo=true;                         %= true, if userSettings.sampleSettingFileName not exist, generate a new one
 userSettings.forceReadRawData=true;                                 %= true, allways read data from raw files;= false, load the rawData.mat if exists in the dataPath; otherwise, read data from raw files
 userSettings.MIN_CHANNEL_SIZE_UM=0.05;                              %lower limit of instrument detection (um), should be greater than 0, default is 0.001um
 userSettings.MAX_CHANNEL_SIZE_UM=1e4;                               %upper limit of instrument detection (um), default is 10mm

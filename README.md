@@ -154,6 +154,7 @@ methods in editable format
 - see `demo.m`
   all the settings are integrated in a structure variable "userSettings". 
 - Definitions of "userSettings"
+- A quick and simple guide: "GS-Package快速入门.pdf"
 ``userSettings.``
   - ``sampleSettingFileName``: sample settings information file
   - ``dataPath``: full path of the raw data files

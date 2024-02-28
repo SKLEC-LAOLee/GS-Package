@@ -607,25 +607,23 @@ for iSample=1:sampleNum
             rawData(validFileNum).adjustP3=rawData(validFileNum).p3;
             rawData(validFileNum).adjustQ3=rawData(validFileNum).q3;
         end
+        % evaluate the corey shape factor
+        % 2D DIA can not measure the paticle thickness, use xMa_min instead.
+        if (xFe_min3Id>0)&&(xMa_min3Id>0)&&(xFe_max3Id>0)
+            rawData(validFileNum).sfCorey=rawData(validFileNum).channelSize_xMa_min ./ sqrt(rawData(validFileNum).channelSize_xFe_min .* rawData(validFileNum).channelSize_xFe_max);
+            rawData(validFileNum).sfCorey(isnan(rawData(validFileNum).sfCorey))=0;
+        else
+            rawData(validFileNum).sfCorey=rawData(validFileNum).adjustQ3.*nan;
+        end
+    
+        % useless for DIA method
+        rawData(validFileNum).obscuration=0;
+        rawData(validFileNum).pumpSpeed=0;
+        rawData(validFileNum).SSa=0;
+        rawData(validFileNum).waterRefractivity=0;
+        rawData(validFileNum).particleRefractivity=0;
+        rawData(validFileNum).particleAbsorptivity=0;
     end
-
-    % evaluate the corey shape factor
-    % 2D DIA can not measure the paticle thickness, use xMa_min instead.
-    if (xFe_min3Id>0)&&(xMa_min3Id>0)&&(xFe_max3Id>0)
-        rawData(validFileNum).sfCorey=rawData(validFileNum).channelSize_xMa_min ./ sqrt(rawData(validFileNum).channelSize_xFe_min .* rawData(validFileNum).channelSize_xFe_max);
-        rawData(validFileNum).sfCorey(isnan(rawData(validFileNum).sfCorey))=0;
-    else
-        rawData(validFileNum).sfCorey=rawData(validFileNum).adjustQ3.*nan;
-    end
-
-    % useless for DIA method
-    rawData(validFileNum).obscuration=0;
-    rawData(validFileNum).pumpSpeed=0;
-    rawData(validFileNum).SSa=0;
-    rawData(validFileNum).waterRefractivity=0;
-    rawData(validFileNum).particleRefractivity=0;
-    rawData(validFileNum).particleAbsorptivity=0;
-
     %
     waitbar(iSample./sampleNum,hidWait);
 end

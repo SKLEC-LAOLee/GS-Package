@@ -282,8 +282,8 @@ for iSample=1:sampleNum
                 period=str2num(strrep(tempStr(tabsId(5)+1:end-1),'min',' '));
                 rawData(validFileNum).analysisPeriod=period(1)*60+period(2);
                 rawData(validFileNum).obscuration=0;
-            case contains(tempStr,'[mm]	p3 [%]	Q3 [%]	q3 [%/mm]	p0 [%]	Q0 [%]	q0 [%/mm]')||contains(tempStr,'[µm]	p3 [%]	Q3 [%]	q3 [%/µm]	p0 [%]	Q0 [%]	q0 [%/µm]')
-                if contains(tempStr,'[mm]	p3 [%]	Q3 [%]	q3 [%/mm]	p0 [%]	Q0 [%]	q0 [%/mm]')
+            case contains(tempStr,'[mm]	p3 [%]	Q3 [%]')||contains(tempStr,'[µm]	p3 [%]	Q3 [%]')
+                if contains(tempStr,'[mm]	p3 [%]	Q3 [%]')
                     convertToUM=1000;
                 else
                     convertToUM=1;

@@ -14,7 +14,7 @@ function rawData=readCamSizerData(userSettings,sampleSettings)
 %            = false load the rawData.mat if exists in the dataPath; otherwise, read data from raw files
 %  MIN_CHANNEL_SIZE_UM: lower limit of instrument detection (um), should be greater than 0, default is 0.01um
 %  MAX_CHANNEL_SIZE_UM: upper limit of instrument detection (um), default is 10mm
-%         instrumentId: 
+%         instrumentId:
 %                     = 1, coulter LS 13320
 %                     =11, camsizer X2
 %                     =21, malvern
@@ -35,7 +35,7 @@ function rawData=readCamSizerData(userSettings,sampleSettings)
 %   exportToAnalySize: export the sample data to AnalySize
 %                      =0, disable
 %                      =1, enable
-% @return: 
+% @return:
 % rawData.
 %           dataPath: full path of the raw data file
 %           fileName: file name of the raw data file
@@ -160,11 +160,11 @@ end
 for iSample=1:sampleNum
     % readdata
     thisDataFileName=allFile(iSample,:);
-    
+
     fidIn=fopen(strcat(userSettings.dataPath,thisDataFileName),'r', 'n' , 'UTF16LE');
     tailId=strfind(thisDataFileName,'_x');
     thisSampleName=thisDataFileName(1:(tailId(end)-1));
-    
+
     thisDiscardFlag=false;
     thisSampleId=nan;
     validSizeLim=[0,inf];
@@ -193,10 +193,53 @@ for iSample=1:sampleNum
     if thisDiscardFlag==true
         continue;
     end
-    
+
     shapeRecordStartFlag=false;
     getValidDataFlag=false;
+
+    channelDownSizeId=1;
+    channelUpSizeId=2;
+    p3Id=3;
+    q3Id=4;
+    spht3Id=0;
+    symm3Id=0;
+    b_l3Id=0;
+    B_LRec3Id=0;
+    sigmav3Id=0;
+    conv3Id=0;
+    rdnsc3Id=0;
+    pdvId=0;
+    xMean3Id=0;
+    xFe3Id=0;
+    xMa3Id=0;
+    xc3Id=0;
+    xFe_min3Id=0;
+    xMa_min3Id=0;
+    xc_min3Id=0;
+    xFe_max3Id=0;
+    xMa_max3Id=0;
+    xc_max3Id=0;
+    trans3Id=0;
+    transb3Id=0;
+    ellipse3Id=0;
     
+    channelDownShapeId=1;
+    channelUpShapeId=2;
+    q3SphtId=0;
+    q3SymmId=0;
+    q3_b_lId=0;
+    q3B_LRecId=0;
+    q3SigmavId=0;
+    q3ConvId=0;
+    q3RdnscId=0;
+    q0SphtId=0;
+    q0SymmId=0;
+    q0_b_lId=0;
+    q0B_LRecId=0;
+    q0SigmavId=0;
+    q0ConvId=0;
+    q0RdnscId=0;
+
     while feof(fidIn)~=1
         tempStr=fgetl(fidIn);
         switch true
@@ -206,7 +249,7 @@ for iSample=1:sampleNum
                     continue;
                 end
                 validFileNum=validFileNum+1;
-                % replace invalid characters with '-' in SampleName, invalid characters: '*."/\[]:;|,?<>' 
+                % replace invalid characters with '-' in SampleName, invalid characters: '*."/\[]:;|,?<>'
                 thisSampleName=strrep(thisSampleName,'*','-');
                 thisSampleName=strrep(thisSampleName,'"','-');
                 thisSampleName=strrep(thisSampleName,'/','-');
@@ -231,7 +274,7 @@ for iSample=1:sampleNum
                 rawData(validFileNum).dataPath=userSettings.dataPath;
                 rawData(validFileNum).fileName=thisDataFileName;
                 rawData(validFileNum).exportToAnalySize=exportToAnalySize;
-                
+
                 rawData(validFileNum).configInfo=tempStr(tabsId(1)+1:tabsId(2)-1);
                 rawData(validFileNum).type=tempStr(tabsId(2)+1:tabsId(3)-1);
                 rawData(validFileNum).analysisTime=datetime(tempStr(tabsId(3)+1:tabsId(5)-1));
@@ -247,32 +290,8 @@ for iSample=1:sampleNum
                 end
                 getValidDataFlag=true;
                 channelNum=0;
-                channelDownSizeId=1;
-                channelUpSizeId=2;
-                p3Id=3;
-                q3Id=4;
-                spht3Id=0;
-                symm3Id=0;
-                b_l3Id=0;
-                B_LRec3Id=0;
-                sigmav3Id=0;
-                conv3Id=0;
-                rdnsc3Id=0;
-                pdvId=0;
-                xMean3Id=0;
-                xFe3Id=0;
-                xMa3Id=0;
-                xc3Id=0;
-                xFe_min3Id=0;
-                xMa_min3Id=0;
-                xc_min3Id=0;
-                xFe_max3Id=0;
-                xMa_max3Id=0;
-                xc_max3Id=0;
-                trans3Id=0;
-                transb3Id=0;
-                ellipse3Id=0;
-                
+
+
                 tabsId=strfind(tempStr,char(9));
                 nVar=length(tabsId)+1;
                 nodes=[0,tabsId,length(tempStr)+1];
@@ -323,7 +342,7 @@ for iSample=1:sampleNum
                         ellipse3Id=iVar;
                     end
                 end
-                
+
                 while feof(fidIn)~=1
                     tempStr=fgetl(fidIn);
                     tempStr=strrep(tempStr,',','.');
@@ -374,7 +393,7 @@ for iSample=1:sampleNum
                 rawData(validFileNum).trans3=zeros(channelNum,1);
                 rawData(validFileNum).transb3=zeros(channelNum,1);
                 rawData(validFileNum).ellipse3=zeros(channelNum,1);
-                
+
                 if spht3Id>0
                     rawData(validFileNum).spht3=thisSampleData(1:channelNum,spht3Id);
                 end
@@ -403,7 +422,7 @@ for iSample=1:sampleNum
                     rawData(validFileNum).channelMeanSize=thisSampleData(1:channelNum,xMean3Id)*convertToUM;
                     rawData(validFileNum).channelMeanSize(rawData(validFileNum).channelMeanSize>userSettings.MAX_CHANNEL_SIZE_UM)=userSettings.MAX_CHANNEL_SIZE_UM;
                 end
-                
+
                 if xFe3Id>0
                     rawData(validFileNum).channelSize_xFe_avg=thisSampleData(1:channelNum,xFe3Id)*convertToUM;
                 end
@@ -448,23 +467,8 @@ for iSample=1:sampleNum
         if shapeRecordStartFlag==true
             rawData(validFileNum).haveShapeData=1;
             channelNum=0;
-            channelDownShapeId=1;
-            channelUpShapeId=2;
-            q3SphtId=0;
-            q3SymmId=0;
-            q3_b_lId=0;
-            q3B_LRecId=0;
-            q3SigmavId=0;
-            q3ConvId=0;
-            q3RdnscId=0;
-            q0SphtId=0;
-            q0SymmId=0;
-            q0_b_lId=0;
-            q0B_LRecId=0;
-            q0SigmavId=0;
-            q0ConvId=0;
-            q0RdnscId=0;
-            
+
+
             tabsId=strfind(tempStr,char(9));
             nVar=length(tabsId)+1;
             nodes=[0,tabsId,length(tempStr)+1];
@@ -501,7 +505,7 @@ for iSample=1:sampleNum
                     q0RdnscId=iVar;
                 end
             end
-            
+
             while feof(fidIn)~=1
                 tempStr=fgetl(fidIn);
                 if length(tempStr)<2
@@ -558,7 +562,7 @@ for iSample=1:sampleNum
             if q3RdnscId>0
                 rawData(validFileNum).q3Rdnsc=thisSampleData(1:channelNum,q3RdnscId);
             end
-            
+
             if q0SphtId>0
                 rawData(validFileNum).q0Spht=thisSampleData(1:channelNum,q0SphtId);
             end
@@ -584,7 +588,7 @@ for iSample=1:sampleNum
         end
     end
     fclose(fidIn);
-    
+
     % reject the invalid components according to the user-defined "validSizeLim"
     if getValidDataFlag==true
         inValidId=(rawData(validFileNum).channelUpSize<rawData(validFileNum).validSizeLim(1))|(rawData(validFileNum).channelDownSize>rawData(validFileNum).validSizeLim(2));
@@ -613,7 +617,7 @@ for iSample=1:sampleNum
     else
         rawData(validFileNum).sfCorey=rawData(validFileNum).adjustQ3.*nan;
     end
-    
+
     % useless for DIA method
     rawData(validFileNum).obscuration=0;
     rawData(validFileNum).pumpSpeed=0;
@@ -621,7 +625,7 @@ for iSample=1:sampleNum
     rawData(validFileNum).waterRefractivity=0;
     rawData(validFileNum).particleRefractivity=0;
     rawData(validFileNum).particleAbsorptivity=0;
-    
+
     %
     waitbar(iSample./sampleNum,hidWait);
 end

@@ -141,15 +141,25 @@ validSampleNum=0;
 
 channelSize=load('malvernGrainsize.siz','-ascii');
 channelSize=channelSize(2:end);
-dataFileId=[];
+allDataFileId=[];
 for iFile=1:fileNum
     thisDataFileName=allFile(iFile,:);
-    fileIds=zeros(size(thisDataTable,1),1)+iFile;
-    instrumentDataTable=[instrumentDataTable;readtable(strcat(userSettings.dataPath,thisDataFileName),'FileType','text')];
-    dataFileId=[dataFileId;fileIds];
+    fileIds=zeros(size(thisDataFileName,1),1)+iFile;
+    thisDataTable=readtable(strcat(userSettings.dataPath,thisDataFileName),'FileType','text');
+    nSample=size(thisDataTable,1);
+    cellVar3={};
+    if ~iscell(thisDataTable.Var3)
+        for iSample=1:nSample
+            cellVar3(iSample,1)={char(thisDataTable.Var3(iSample))};
+        end
+        thisDataTable.Var3=cellVar3;
+    end
+    thisFileId=zeros(nSample,1)+fileIds;
+    instrumentDataTable=[instrumentDataTable;thisDataTable];
+    allDataFileId=[allDataFileId;thisFileId];
 end
-[sampleNum,varNum]=size(instrumentDataTable);
-if sampleNum<1
+[nSample,varNum]=size(instrumentDataTable);
+if nSample<1
     close(hidWait);
     return;
 end
@@ -159,7 +169,7 @@ if varNum~=110
     return;
 end
 
-for iSample=1:sampleNum
+for iSample=1:nSample
     thisSampleName=instrumentDataTable.Var1{iSample};
     thisDiscardFlag=false;
     thisSampleId=nan;
@@ -217,9 +227,9 @@ for iSample=1:sampleNum
     rawData(validSampleNum).groupName=thisGroupName;
     rawData(validSampleNum).groupId=thisGroupId;
     rawData(validSampleNum).dataPath=userSettings.dataPath;
-    rawData(validSampleNum).fileName=allFile(dataFileId(iSample),:);
+    rawData(validSampleNum).fileName=allFile(allDataFileId(iSample),:);
     rawData(validSampleNum).exportToAnalySize=exportToAnalySize;
-    rawData(validSampleNum).configInfo=instrumentDataTable.Var3{iSample};
+    rawData(validSampleNum).configInfo=instrumentDataTable.Var3(iSample);
     rawData(validSampleNum).type='x_area';
     rawData(validSampleNum).analysisTime=instrumentDataTable.Var2(iSample); %datetime类型
     rawData(validSampleNum).validSizeLim=validSizeLim;
@@ -254,7 +264,7 @@ for iSample=1:sampleNum
     rawData(validSampleNum).adjustP3=newP3;
     rawData(validSampleNum).adjustQ3=newQ3;
     rawData(validSampleNum).haveShapeData=false;
-    waitbar(iSample./sampleNum,hidWait);
+    waitbar(iSample./nSample,hidWait);
 end
 close(hidWait);
 if validSampleNum<1

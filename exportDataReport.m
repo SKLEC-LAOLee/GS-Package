@@ -263,7 +263,7 @@ for iSample=1:nSample
         fprintf(fidoutMetadata,'''%s,''%s',statisticalParams(iSample).dataPath,statisticalParams(iSample).fileName);
         fprintf(fidoutMetadata,',''%s,''%s,%d',statisticalParams(iSample).groupName,statisticalParams(iSample).sampleName,statisticalParams(iSample).sampleId);
         fprintf(fidoutMetadata,',%d',statisticalParams(iSample).instrumentId);
-        fprintf(fidoutMetadata,',''%s''',statisticalParams(iSample).configInfo);
+        fprintf(fidoutMetadata,',''%s''',char(statisticalParams(iSample).configInfo));
         fprintf(fidoutMetadata,',''%s',statisticalParams(iSample).type);
         fprintf(fidoutMetadata,',%s,%d',char(statisticalParams(iSample).analysisTime,'uuuu/MM/dd HH:mm:ss'),statisticalParams(iSample).analysisPeriod);
         if (statisticalParams(iSample).instrumentId>30)&&(statisticalParams(iSample).instrumentId<40)

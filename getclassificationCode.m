@@ -54,7 +54,7 @@ else
     mud=silt+clay;
     switch true
         case (gravel>=90)
-            classificationCode=G;
+            classificationCode='G';
         case (gravel>=80)&&(gravel<90)&&((mud/sand)>1)
             classificationCode='(m)G';
         case (gravel>=80)&&(gravel<90)&&((mud/sand)<=1)

@@ -154,7 +154,9 @@ methods in editable format
 - see `demo.m`
   all the settings are integrated in a structure variable "userSettings". 
 - Definitions of "userSettings"
-- A quick and simple guide: "./manual/QuickIn.pdf"
+- A quick and simple guide: 
+  - ./manual/QuickIn.pdf
+  - ./manual/readme.pdf
 ``userSettings.``
   - ``sampleSettingFileName``: sample settings information file
   - ``dataPath``: full path of the raw data files
@@ -183,9 +185,9 @@ methods in editable format
 ### Microtrac Cmasizer X2
 - Supports "*.xle" or "*.xld" format data files originally exported by the instrument's operating software.
 - When both "*.xle" and "*.xld" files exist, only the "*.xle" file is read.
-### Coulter LS13320/Coulter LS100
+### Coulter LS13320 / Coulter LS100
 - Supports data files with "*.$*" suffix originally exported by the instrument operation software
-### Malvern MasterSizer 2000/Malvern MasterSizer 3000
+### Malvern MasterSizer 2000 / Malvern MasterSizer 3000
 - The program does not support to read the "*.mea" format file, you have to export the "*.mea" file to ascii text foramt in Mastersizer 2000/3000 software, the procedures are as follows:
 #### For Mastersizer 2000 V5.61
 1. Edit menu>>User grainsize>>Edit grainsize: Load grainsize, select malvernGrainsize.siz
@@ -211,5 +213,5 @@ methods in editable format
     - Format Options = (1) Row order; (2) Use tab as separators;(3)No formating; (4) Exclude header rows.
     - Export data to file, select text file (*.txt)
 6. change the data file suffix from "*.txt" to "*.mal"
-#### Sequoia LISST200X
+#### For Sequoia LISST200X
 - Supports data files with "*.csv" suffix originally exported by the instrument operation software

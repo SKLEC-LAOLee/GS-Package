@@ -151,12 +151,13 @@ methods in editable format
 - State market regulatory administration of P.R.C. "Specifications for oceanographic survey - Part 8: marine geology and geophysics survey (海洋调查规范 第8部分: 海洋地质地球物理调查.)" GB/T 12763.8-2007(2007).
 - Terence C. Blair, John G. McPherson; Grain-size and textural classification of coarse sedimentary particles. Journal of Sedimentary Research 69 (1999): 6–19. https://doi.org/10.2110/jsr.69.6
 ## How to use GS-Package
+- A quick and simple guide: 
+  - ` ./manual/QuickIn.pdf`
+  - ` ./manual/readme.pdf`
+
 - see `demo.m`
   all the settings are integrated in a structure variable "userSettings". 
 - Definitions of "userSettings"
-- A quick and simple guide: 
-  - ./manual/QuickIn.pdf
-  - ./manual/readme.pdf
 ``userSettings.``
   - ``sampleSettingFileName``: sample settings information file
   - ``dataPath``: full path of the raw data files

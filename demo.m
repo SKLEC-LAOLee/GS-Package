@@ -4,8 +4,8 @@
 % @author:      Li Weihua, whli@sklec.ecnu.edu.cn
 % @version:     Ver1.0, 2023.10.26
 %----------------------------------------------------------------------------------------------------
-userSettings.sampleSettingFileName='D:\outputs\settings.csv'; %sample settings information file, not necessary
-userSettings.dataPath='D:\';                     %full path of the raw data files
+userSettings.sampleSettingFileName='settings.csv'; %sample settings information file, not necessary
+userSettings.dataPath='D:\张丹test\张丹test\';                     %full path of the raw data files
 userSettings.outputPath='D:\张丹test\张丹test\outputs\';           %full path of the output files
 userSettings.prefixString='all';                          %prefixes for archive file names
 userSettings.prepareSampleSettingInfo=true;                         %= true, if userSettings.sampleSettingFileName not exist, generate a new one

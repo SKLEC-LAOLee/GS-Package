@@ -154,7 +154,7 @@ methods in editable format
 - see `demo.m`
   all the settings are integrated in a structure variable "userSettings". 
 - Definitions of "userSettings"
-- A quick and simple guide: "GS-Package快速入门.pdf"
+- A quick and simple guide: "./manual/QuickIn.pdf"
 ``userSettings.``
   - ``sampleSettingFileName``: sample settings information file
   - ``dataPath``: full path of the raw data files
@@ -179,13 +179,37 @@ methods in editable format
   - ``exportAllData``: output all the statistical parameters, =``true`` or ``false``
   - ``exportUserComponent``: output statistical parameters of the user-speicified components, =``true`` or ``false``
   - ``exportClassificationScheme``: output diagnostic triangular phase map, =``true`` or ``false``
-## How to batch export text data in Mastersizer 2000/3000 software?
+## Data preparation
+### Microtrac Cmasizer X2
+- Supports "*.xle" or "*.xld" format data files originally exported by the instrument's operating software.
+- When both "*.xle" and "*.xld" files exist, only the "*.xle" file is read.
+### Coulter LS13320/Coulter LS100
+- Supports data files with "*.$*" suffix originally exported by the instrument operation software
+### Malvern MasterSizer 2000/Malvern MasterSizer 3000
+- The program does not support to read the "*.mea" format file, you have to export the "*.mea" file to ascii text foramt in Mastersizer 2000/3000 software, the procedures are as follows:
+#### For Mastersizer 2000 V5.61
 1. Edit menu>>User grainsize>>Edit grainsize: Load grainsize, select malvernGrainsize.siz
 2. Copy malvernExportDataForGSPackage.edf to the following directory:
-    - C:\Users\Public\Documents\Malvern Instruments\Mastersizer 2000\Export Templates
-4. shift+left click of mouse button to select the data file >> File menu >> Export Data:
+    - x:\Users\Public\Documents\Malvern Instruments\Mastersizer 2000\Export Templates
+3. shift+left click of mouse button to select the data file >> File menu >> Export Data:
     - Use Data Templates = malvernExportDataForGSPackage
-    - Format Options = Use tabs as separators, exclude header rows.
+    - Format Options = Use tab as separators, exclude header rows.
     - Export data to file, select text file (*.txt)
     - Check to overwrite files
-    - Output filename suffixes only allowed as *.mal
+4. change the data file suffix from "*.txt" to "*.mal"
+#### For Mastersizer 3000 V3.63
+1. Copy malvernExportDataForGSPackage-EN.edf to the following directory:
+    - x:\ProgramData\Malvern Instruments\Mastersizer 3000\Workspace\Data Template
+2. If installed Chinese version, Copy malvernExportDataForGSPackage-CN.edf to the following directory:
+    - x:\ProgramData\Malvern Instruments\Mastersizer 3000\工作区\数据模板
+3. Backup and delete all the files in the following directory:
+    - x:\ProgramData\Malvern Instruments\Mastersizer 3000\User Sizes
+4. Copy malvernGrainsize.siz to the following directory:
+    - x:\ProgramData\Malvern Instruments\Mastersizer 3000\User Sizes
+5. Main menu >> Export all records:
+    - Use Data Templates = malvernExportDataForGSPackage
+    - Format Options = (1) Row order; (2) Use tab as separators;(3)No formating; (4) Exclude header rows.
+    - Export data to file, select text file (*.txt)
+6. change the data file suffix from "*.txt" to "*.mal"
+#### Sequoia LISST200X
+- Supports data files with "*.csv" suffix originally exported by the instrument operation software

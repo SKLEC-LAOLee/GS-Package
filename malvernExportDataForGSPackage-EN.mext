@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!--Mastersizer - Data Template-->
+<DataTemplate Version="2" Name="malvernExportDataForGSPackage" Notes="" IncludeHeaderRows="false" FormatData="true" OrderingFormat="Row" FileFormat="TabDelimited" TemplateType="StandardTemplate" DataPrefix="" HeaderOnePrefix="" HeaderTwoPrefix="" MeasurementIndex="">
+  <SelectedParameters>
+    <Parameter Name="Sample Name" Parameter="ebbca538-8919-40ca-bbae-114b52dca0cd" ArgumentText="Sample Name," />
+    <Parameter Name="Measurement Date Time" Parameter="38b766f1-b526-4352-88ec-aac38b5d4527" ArgumentText="" />
+    <Parameter Name="SOP File Name" Parameter="caacfc9e-07ea-42d8-866c-ea344ba49741" ArgumentText="" />
+    <Parameter Name="Feed Rate Achieved" Parameter="e8ee7a0f-7e6d-4f89-838e-bc95cee218d6" ArgumentText="" />
+    <Parameter Name="Specific Surface Area" Parameter="60c253a0-335b-423f-9e70-190dc68def2b" ArgumentText="" />
+    <Parameter Name="Dispersant Refractive Index" Parameter="88aa7d4f-d665-4674-bcd2-59809994da2e" ArgumentText="" />
+    <Parameter Name="Particle Absorption Index" Parameter="0573346a-b02e-4e76-a886-916e3f2613a7" ArgumentText="" />
+    <Parameter Name="Particle Refractive Index" Parameter="8e23adaf-c386-4bcc-a797-09db5e253f80" ArgumentText="" />
+    <Parameter Name="Laser Obscuration" Parameter="c9e46b05-fd0f-4bba-af7a-ead3f0d33c2b" ArgumentText="" />
+    <Parameter Name="Result Under Sizes" Parameter="d33df77f-8596-4cd5-9193-4f4d98c366a6" ArgumentText="" />
+  </SelectedParameters>
+  <SelectedHeaderOneParameters />
+  <SelectedHeaderTwoParameters />
+</DataTemplate>

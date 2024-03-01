@@ -5,8 +5,8 @@
 % @version:     Ver1.0, 2023.10.26
 %----------------------------------------------------------------------------------------------------
 userSettings.sampleSettingFileName='settings.csv'; %sample settings information file, not necessary
-userSettings.dataPath='D:\张丹test\张丹test\';                     %full path of the raw data files
-userSettings.outputPath='D:\张丹test\张丹test\outputs\';           %full path of the output files
+userSettings.dataPath='D:\test\';                     %full path of the raw data files
+userSettings.outputPath='D:\test\';           %full path of the output files
 userSettings.prefixString='all';                          %prefixes for archive file names
 userSettings.prepareSampleSettingInfo=true;                         %= true, if userSettings.sampleSettingFileName not exist, generate a new one
 userSettings.forceReadRawData=true;                                 %= true, allways read data from raw files;= false, load the rawData.mat if exists in the dataPath; otherwise, read data from raw files

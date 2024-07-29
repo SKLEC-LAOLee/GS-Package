@@ -316,8 +316,16 @@ for iSample=1:sampleNum
     if getValidDataFlag==true
         rawData(validFileNum).channelDownSize=[thisSampleData(1:end-1,1)];
         rawData(validFileNum).channelUpSize=[thisSampleData(2:end,1)];
-        thisSampleLogMidSize=(log2(rawData(validFileNum).channelDownSize)+log2(rawData(validFileNum).channelUpSize))./2;
-        rawData(validFileNum).channelMidSize=2.^(thisSampleLogMidSize);
+        if userSettings.channelMidPointMethod==1  %log mid
+            thisSampleMidSize=(log2(rawData(validFileNum).channelDownSize)+log2(rawData(validFileNum).channelUpSize))./2;
+            thisSampleMidSize=2.^(thisSampleMidSize);
+        elseif userSettings.channelMidPointMethod==2 %geometry mid
+            thisSampleMidSize=sqrt(rawData(validFileNum).channelDownSize.*rawData(validFileNum).channelUpSize);
+        else
+            thisSampleMidSize=(log2(rawData(validFileNum).channelDownSize)+log2(rawData(validFileNum).channelUpSize))./2;
+            thisSampleMidSize=2.^(thisSampleMidSize);
+        end
+        rawData(validFileNum).channelMidSize=thisSampleMidSize;
         rawData(validFileNum).p3=thisSampleData(1:end-1,2);
         % reject the invalid components according to the user-defined "validSizeLim"
         inValidId=(rawData(validFileNum).channelUpSize<rawData(validFileNum).validSizeLim(1))|(rawData(validFileNum).channelDownSize>rawData(validFileNum).validSizeLim(2));

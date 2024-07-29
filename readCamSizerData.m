@@ -365,8 +365,16 @@ for iSample=1:sampleNum
                 userSettings.MAX_CHANNEL_SIZE_UM=max([userSettings.MAX_CHANNEL_SIZE_UM,max(rawData(validFileNum).channelDownSize)]);
                 rawData(validFileNum).channelDownSize(rawData(validFileNum).channelDownSize<userSettings.MIN_CHANNEL_SIZE_UM)=userSettings.MIN_CHANNEL_SIZE_UM;
                 rawData(validFileNum).channelUpSize(rawData(validFileNum).channelUpSize>userSettings.MAX_CHANNEL_SIZE_UM)=userSettings.MAX_CHANNEL_SIZE_UM;
-                thisSampleLogMidSize=(log2(rawData(validFileNum).channelDownSize)+log2(rawData(validFileNum).channelUpSize))./2;
-                rawData(validFileNum).channelMidSize=2.^(thisSampleLogMidSize);
+                if userSettings.channelMidPointMethod==1  %log mid
+                    thisSampleMidSize=(log2(rawData(validFileNum).channelDownSize)+log2(rawData(validFileNum).channelUpSize))./2;
+                    thisSampleMidSize=2.^(thisSampleMidSize);
+                elseif userSettings.channelMidPointMethod==2 %geometry mid
+                    thisSampleMidSize=sqrt(rawData(validFileNum).channelDownSize.*rawData(validFileNum).channelUpSize);
+                else
+                    thisSampleMidSize=(log2(rawData(validFileNum).channelDownSize)+log2(rawData(validFileNum).channelUpSize))./2;
+                    thisSampleMidSize=2.^(thisSampleMidSize);
+                end
+                rawData(validFileNum).channelMidSize=thisSampleMidSize;
                 rawData(validFileNum).p3=thisSampleData(1:channelNum,p3Id);
                 rawData(validFileNum).q3=thisSampleData(1:channelNum,q3Id);
                 rawData(validFileNum).adjustP3=rawData(validFileNum).p3;
@@ -525,8 +533,10 @@ for iSample=1:sampleNum
             end
             rawData(validFileNum).channelDownShape=thisSampleData(1:channelNum,channelDownShapeId);
             rawData(validFileNum).channelUpShape=thisSampleData(1:channelNum,channelUpShapeId);
-            thisSampleLogMidShape=(log2(rawData(validFileNum).channelDownShape)+log2(rawData(validFileNum).channelUpShape))./2;
-            rawData(validFileNum).channelMidShape=2.^(thisSampleLogMidShape);
+            % only log method
+            thisSampleMidShape=(log2(rawData(validFileNum).channelDownShape)+log2(rawData(validFileNum).channelUpShape))./2;
+            thisSampleMidShape=2.^(thisSampleMidShape);
+            rawData(validFileNum).channelMidShape=thisSampleMidShape;
             rawData(validFileNum).q3Spht=zeros(channelNum,1);
             rawData(validFileNum).q3Symm=zeros(channelNum,1);
             rawData(validFileNum).q3_b_l=zeros(channelNum,1);

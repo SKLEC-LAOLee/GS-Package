@@ -243,8 +243,16 @@ for iSample=1:nSample
 
     rawData(validSampleNum).channelDownSize=channelSize(1:end-1,1);
     rawData(validSampleNum).channelUpSize=channelSize(2:end,1);
-    thisSampleLogMidSize=(log2(rawData(validSampleNum).channelDownSize)+log2(rawData(validSampleNum).channelUpSize))./2;
-    rawData(validSampleNum).channelMidSize=2.^(thisSampleLogMidSize);
+    if userSettings.channelMidPointMethod==1 %log mid
+        thisSampleMidSize=(log2(rawData(validSampleNum).channelDownSize)+log2(rawData(validSampleNum).channelUpSize))./2;
+        thisSampleMidSize=2.^(thisSampleMidSize);
+    elseif userSettings.channelMidPointMethod==2 %geometry mid
+        thisSampleMidSize=sqrt(rawData(validSampleNum).channelDownSize.*rawData(validSampleNum).channelUpSize);
+    else
+        thisSampleMidSize=(log2(rawData(validSampleNum).channelDownSize)+log2(rawData(validSampleNum).channelUpSize))./2;
+        thisSampleMidSize=2.^(thisSampleMidSize);
+    end
+    rawData(validSampleNum).channelMidSize=thisSampleMidSize;
     q3=table2array(instrumentDataTable(iSample,10:end))';
     rawData(validSampleNum).p3=diff(q3);
     % reject the invalid components according to the user-defined "validSizeLim"

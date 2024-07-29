@@ -5,9 +5,9 @@
 % @version:     Ver1.0, 2023.10.26
 %----------------------------------------------------------------------------------------------------
 userSettings.sampleSettingFileName='settings.csv'; %sample settings information file, not necessary
-userSettings.dataPath='D:\test\';                     %full path of the raw data files
-userSettings.outputPath='D:\test\';           %full path of the output files
-userSettings.prefixString='all';                          %prefixes for archive file names
+userSettings.dataPath='testData\camSizerX2\';                     %full path of the raw data files
+userSettings.outputPath='testData\camSizerX2\';           %full path of the output files
+userSettings.prefixString='test';                          %prefixes for archive file names
 userSettings.prepareSampleSettingInfo=true;                         %= true, if userSettings.sampleSettingFileName not exist, generate a new one
 userSettings.forceReadRawData=true;                                 %= true, allways read data from raw files;= false, load the rawData.mat if exists in the dataPath; otherwise, read data from raw files
 userSettings.MIN_CHANNEL_SIZE_UM=0.05;                              %lower limit of instrument detection (um), should be greater than 0, default is 0.001um
@@ -25,5 +25,6 @@ userSettings.exportGBT12763=true ;                                  %output repo
 componentRank=[0.01,3.9,32,62.5,125,250,500,1000,2000,4000,8000]';  %size of the user-defined components,in unit of um
 userSettings.componentDownSize=componentRank(1:end-1,1);            %upper size of the user components (um)
 userSettings.componentUpSize=componentRank(2:end,1);                %lower size of the user components (um)
+userSettings.channelMidPointMethod=1;                               %method for calculate the size of the channel middle point: =1, log middle method; =2, geometry middle point
 %-------------------------------------------------------------------
 gs_package_processing_flow(userSettings);

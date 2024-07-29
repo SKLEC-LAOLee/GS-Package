@@ -187,6 +187,8 @@ channelSize=[1
     420
     500];
 
+
+
 dataFileId=nan(195*fileNum,1);
 instrumentDataTable=nan(195*fileNum,61);
 sampleNum=0;
@@ -294,8 +296,17 @@ for iSample=1:sampleNum
 
     rawData(validSampleNum).channelDownSize=channelSize(1:end-1,1);
     rawData(validSampleNum).channelUpSize=channelSize(2:end,1);
-    thisSampleLogMidSize=(log2(rawData(validSampleNum).channelDownSize)+log2(rawData(validSampleNum).channelUpSize))./2;
-    rawData(validSampleNum).channelMidSize=2.^(thisSampleLogMidSize);
+
+    if userSettings.channelMidPointMethod==1  %log mid
+        thisSampleMidSize=(log2(rawData(validSampleNum).channelDownSize)+log2(rawData(validSampleNum).channelUpSize))./2;
+        thisSampleMidSize=2.^(thisSampleMidSize);
+    elseif userSettings.channelMidPointMethod==2 %geometry mid
+        thisSampleMidSize=sqrt(rawData(validSampleNum).channelDownSize.*rawData(validSampleNum).channelUpSize);
+    else
+        thisSampleMidSize=(log2(rawData(validSampleNum).channelDownSize)+log2(rawData(validSampleNum).channelUpSize))./2;
+        thisSampleMidSize=2.^(thisSampleMidSize);
+    end
+    rawData(validSampleNum).channelMidSize=thisSampleMidSize;
 
     rawData(validSampleNum).p3=instrumentDataTable(iSample,1:36)'./sum(instrumentDataTable(iSample,1:36)).*100;
     % reject the invalid components according to the user-defined "validSizeLim"

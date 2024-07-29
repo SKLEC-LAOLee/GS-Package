@@ -19,7 +19,6 @@ function [channelUpperSize,cumuPercent,medianVal,meanVal,passingVal]=diff2cum(in
 % @references:
 % NONE
 %----------------------------------------------------------------------------------------------------
-channelUpperSize=[];
 cumuPercent=[];
 medianVal=nan;
 meanVal=nan;

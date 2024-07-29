@@ -12,7 +12,9 @@ LAOLee's email: whli@sklec.ecnu.edu.cn
 - Coulter LS100
 - Malvern MasterSizer 2000
 - Malvern MasterSizer 3000
-- Sequoia LISST200X
+- Sequoia LISST-200X
+- Sequoia LISST-HAB
+- Sequoia LISST-BLACK
 ## Currently implemented functions
 - output metadata report
 - Characterization of particle size and shape
@@ -182,6 +184,7 @@ methods in editable format
   - ``exportAllData``: output all the statistical parameters, =``true`` or ``false``
   - ``exportUserComponent``: output statistical parameters of the user-speicified components, =``true`` or ``false``
   - ``exportClassificationScheme``: output diagnostic triangular phase map, =``true`` or ``false``
+  - ``channelMidPointMethod``: method for calculate the size of the channel middle point: =1, log middle method; =2, geometry middle point
 ## Data preparation
 ### Microtrac Cmasizer X2
 - Supports "*.xle" or "*.xld" format data files originally exported by the instrument's operating software.

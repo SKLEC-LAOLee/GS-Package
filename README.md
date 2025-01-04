@@ -188,7 +188,7 @@ methods in editable format
 ## Data preparation
 ### Microtrac Cmasizer X2
 - Supports "*.xle" or "*.xld" format data files originally exported by the instrument's operating software.
-- When both "*.xle" and "*.xld" files exist, only the "*.xle" file is read.
+- When both "*.xle" and "*.xld" files exist, only process the "*.xle" files.
 ### Coulter LS13320 / Coulter LS100
 - Supports data files with "*.$*" suffix originally exported by the instrument operation software
 ### Malvern MasterSizer 2000 / Malvern MasterSizer 3000
